@@ -4,16 +4,14 @@
  * This file has been released under the GNU Public Licence version 2 or later
  */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
-#define __USE_GNU
 #include <dlfcn.h>
 
-
-#ifdef __OpenBSD__
-#define RTLD_DEFAULT   ((void *) 0)
-#endif 
-
+#ifndef RTLD_DEFAULT
+#define RTLD_DEFAULT "libc.so"
+#endif
 
 int main( int argc, char *argv[] )
 {
@@ -22,7 +20,8 @@ int main( int argc, char *argv[] )
 	handle = dlopen( RTLD_DEFAULT, RTLD_LAZY );
 	if( handle != NULL ) {
 		void *sprintf;
-	       
+
+		dlerror(); /* clear any errors */
 		sprintf = dlsym( handle, "sprintf" );
 
 		if( dlerror() == NULL ) {

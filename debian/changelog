@@ -1,3 +1,10 @@
+paxtest (0.9.7-1) stable; urgency=low
+  * Fixed some tests on OpenBSD (thanks to hunger@hunger.hu)
+  * Fixed return address acquisition, still gcc specific
+  * Switched to paxctl on gentoo
+  * Fixed setting up LD_LIBRARY_PATH in genpaxtest (Peter S. Mazinger)
+  * Added uClibc support (Peter S. Mazinger)
+
 paxtest (0.9.6-1) stable; urgency=low
 
   * Made the do_mprotect() call in body.c optional, thereby introducing two

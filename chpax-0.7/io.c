@@ -1,7 +1,7 @@
 /*
 ** io.c for chpax
 **
-** The PaX project : http://pageexec.virtualave.net/
+** The PaX project : http://pax.grsecurity.net/
 **
 */
 #include "chpax.h"
@@ -44,7 +44,8 @@ int			read_header(char *name, int mode)
 	    header_elf64.e_machine != EM_SPARCV9 &&
 	    header_elf64.e_machine != EM_ALPHA &&
 	    header_elf64.e_machine != EM_X86_64 &&
-	    header_elf64.e_machine != EM_IA_64)
+	    header_elf64.e_machine != EM_IA_64 &&
+	    header_elf64.e_machine != EM_PPC64)
 	  return 3;
 	header = &header_elf64;
 	header_size = sizeof(header_elf64);
@@ -60,7 +61,9 @@ int			read_header(char *name, int mode)
 	   header_elf.e_machine != EM_SPARC && 
 	   header_elf.e_machine != EM_SPARC32PLUS &&
 	   header_elf.e_machine != EM_PARISC &&
-	   header_elf.e_machine != EM_PPC)
+	   header_elf.e_machine != EM_PPC &&
+	   header_elf.e_machine != EM_MIPS &&
+	   header_elf.e_machine != EM_MIPS_RS3_LE)
 	 return 3;
 	header = &header_elf;
 	header_size = sizeof(header_elf);
@@ -95,7 +98,7 @@ int	write_header()
   int	size;
   int	block;
 
-  if (lseek(fd, 0, SEEK_SET))
+  if ((off_t)-1 == lseek(fd, 0, SEEK_SET))
     return 1;
 
   ptr = (char *) header;

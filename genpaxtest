@@ -8,7 +8,7 @@
 #
 
 echo $RUNDIR
-if [ "${RUNDIR}" == "" ]
+if [ "${RUNDIR}" = "" ]
 then
 	RUNDIR=.
 fi
@@ -35,7 +35,12 @@ fi
 
 export PAXTEST_MODE
 
-LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}:${RUNDIR}
+if [ "${LD_LIBRARY_PATH}" = "" ]
+then
+	LD_LIBRARY_PATH=${RUNDIR}
+else
+	LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}:${RUNDIR}
+fi
 export LD_LIBRARY_PATH
 
 cat <<__end__ | tee paxtest.log

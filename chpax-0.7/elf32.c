@@ -1,7 +1,7 @@
 /*
 ** elf32.c for chpax
 **
-** The PaX project : http://pageexec.virtualave.net/
+** The PaX project : http://pax.grsecurity.net/
 **
 */
 #include "chpax.h"

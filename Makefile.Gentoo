@@ -18,12 +18,12 @@ CC_SSP := $(shell if gcc -fno-stack-protector -S -o /dev/null -xc /dev/null >/de
 OPT_FLAGS  := -O2
 # define stripping of binaries/libs here, or set these on make's commandline,
 # else you'll loose the chpax flags!
-LDFLAGS :=
+LDFLAGS :=-lpthread
 SHLDFLAGS :=
 ifndef RUNDIR
 RUNDIR := /usr/lib/paxtest
 endif
-CHPAX:=chpax
+PAXCTL:=paxctl
 
 # The Hardened GCC compiler has stack protector on by default, this
 # could interfere with the results of this test.
@@ -112,7 +112,7 @@ getheap1: getheap2.o
 # requires the nonPIC version (is this correct?)
 getmain1: $$@.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	$(CHPAX) -SPRXM $@
+	$(PAXCTL) -SPRXM $@
 
 getheap2 getmain2: $(PAX_DEP) $$@.o
 	$(CC) $(LDFLAGS) $(CC_PIE) -o $@ $+
@@ -122,19 +122,19 @@ getshlib: $$@.o
 
 getstack1: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	$(CHPAX) -SRp $@
+	$(PAXCTL) -SRp $@
 
 getstack2: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $<
 	# disable segmexec, kernel else overrides pageexec
-	$(CHPAX) -PRs $@
+	$(PAXCTL) -PRs $@
 	
 $(MPROTSH_TESTS): body.o $$@.o shlibtest.so
 	$(CC) $(LDFLAGS) -o $@ $+
 
 $(RETX_TESTS): body.o $$@.o
 	$(CC) $(LDFLAGS) -o $@ $+
-	$(CHPAX) -SPXM $@
+	$(PAXCTL) -SPXM $@
 	
 shlib%.o: shlib%.c
 	$(CC) $(CFLAGS) $(CC_PIC) -o $@ -c $<

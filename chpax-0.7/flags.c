@@ -1,7 +1,7 @@
 /*
 ** flags.c for chpax
 ** 
-** The PaX project : http://pageexec.virtualave.net/
+** The PaX project : http://pax.grsecurity.net/
 **
 */
 #include "chpax.h"
@@ -114,13 +114,12 @@ char *pax_short_flags(unsigned long flags)
 {
   static char buffer[7];
 
-  snprintf(buffer, sizeof(buffer), "%c%c%c%c%c%c",
-	 flags & HF_PAX_PAGEEXEC ? 'p' : 'P',
-	 flags & HF_PAX_EMUTRAMP ? 'E' : 'e',
-	 flags & HF_PAX_MPROTECT ? 'm' : 'M',
-	 flags & HF_PAX_RANDMMAP ? 'r' : 'R',
-	 flags & HF_PAX_RANDEXEC ? 'X' : 'x',
-	 flags & HF_PAX_SEGMEXEC ? 's' : 'S');
+  buffer[0] = (flags & HF_PAX_PAGEEXEC ? 'p' : 'P');
+  buffer[1] = (flags & HF_PAX_EMUTRAMP ? 'E' : 'e');
+  buffer[2] = (flags & HF_PAX_MPROTECT ? 'm' : 'M');
+  buffer[3] = (flags & HF_PAX_RANDMMAP ? 'r' : 'R');
+  buffer[4] = (flags & HF_PAX_RANDEXEC ? 'X' : 'x');
+  buffer[5] = (flags & HF_PAX_SEGMEXEC ? 's' : 'S');
   return buffer;
 }
 

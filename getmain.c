@@ -7,12 +7,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void foo( int unused )
+static void foo(void)
 {
-	printf( "0x%08x\n", ((unsigned long*)&unused)[-1] );
+	printf( "%p\n", __builtin_return_address(0) );
 }
 
 int main( int argc, char *argv[] )
 {
-	foo(0);
+	foo();
 }

@@ -1,5 +1,5 @@
 /*
- * chpax version 0.5
+ * chpax version 0.7
  *
  * This program manages various PaX related flags for ELF32, ELF64, 
  * and a.out binaries. The flags only have effect when running the 
@@ -14,8 +14,8 @@
  */
 #include "chpax.h"
 
-struct elf32_hdr	header_elf;
-struct elf64_hdr	header_elf64;
+Elf32_Ehdr		header_elf;
+Elf64_Ehdr		header_elf64;
 struct exec		header_aout;
 int			header_size;
 void			*header;

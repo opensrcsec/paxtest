@@ -24,7 +24,8 @@ void doit( void )
 	bufbss = '\xc3';
 
 	/* Try to make the memory region executable by using mprotect() */
-	do_mprotect( &bufbss, 1, PROT_EXEC );
+	/* Due to an OpenBSD bug PROT_READ is required */
+	do_mprotect( &bufbss, 1, PROT_READ|PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)&bufbss;

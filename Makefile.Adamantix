@@ -50,7 +50,7 @@ UTILS=	getamap \
 	getstack1 \
 	getstack2
 
-CHPAX:=chpax-0.5
+CHPAX:=chpax-0.7
 
 CHPAXSRC:=$(CHPAX)/aout.c \
 	$(CHPAX)/chpax.c \
@@ -67,7 +67,7 @@ all: chpax $(SHLIBS) $(TESTS) $(UTILS) paxtest
 clean:
 	-rm -f *.o $(CHPAX)/*.o *.s *~ core
 	-rm -f $(SHLIBS) $(TESTS) $(UTILS)
-	-rm -f dumpspecs paxtest chpax paxtest.log a.out
+	-rm -f dumpspecs paxtest chpax paxtest.log a.out getheap2.c getmain[12].c
 
 ifdef DESTDIR
 ifdef BINDIR

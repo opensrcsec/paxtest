@@ -1,7 +1,7 @@
 /*
  * Include file for chpax.c
  * 
- * The PaX project : http://pageexec.virtualave.net/
+ * The PaX project : http://pax.grsecurity.net/
  * 
  */
 #include <stdio.h>
@@ -10,10 +10,10 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <linux/elf.h>
-#include <linux/a.out.h>
+#include <elf.h>
+#include <a.out.h>
 
-#define	CHPAX_VERSION		"0.5"
+#define	CHPAX_VERSION		"0.7"
 
 #define HF_PAX_PAGEEXEC         1    /* 0: Paging based non-exec pages */
 #define HF_PAX_EMUTRAMP         2    /* 0: Emulate trampolines */
@@ -23,6 +23,22 @@
 #define HF_PAX_SEGMEXEC         32   /* 0: Segmentation based non-exec pages */
 
 #define EI_PAX                  14   /* Index to read the PaX flags into ELF header e_ident[] array */
+
+#ifndef PT_PAX_FLAGS
+#define PT_PAX_FLAGS	0x65041580	/* Indicates PaX flag markings */
+#define PF_PAGEEXEC	(1 << 4)	/* Enable  PAGEEXEC */
+#define PF_NOPAGEEXEC	(1 << 5)	/* Disable PAGEEXEC */
+#define PF_SEGMEXEC	(1 << 6)	/* Enable  SEGMEXEC */
+#define PF_NOSEGMEXEC	(1 << 7)	/* Disable SEGMEXEC */
+#define PF_MPROTECT	(1 << 8)	/* Enable  MPROTECT */
+#define PF_NOMPROTECT	(1 << 9)	/* Disable MPROTECT */
+#define PF_RANDEXEC	(1 << 10)	/* Enable  RANDEXEC */
+#define PF_NORANDEXEC	(1 << 11)	/* Disable RANDEXEC */
+#define PF_EMUTRAMP	(1 << 12)	/* Enable  EMUTRAMP */
+#define PF_NOEMUTRAMP	(1 << 13)	/* Disable EMUTRAMP */
+#define PF_RANDMMAP	(1 << 14)	/* Enable  RANDMMAP */
+#define PF_NORANDMMAP	(1 << 15)	/* Disable RANDMMAP */
+#endif
 
 #define	XCLOSE(fd)		\
 do				\
@@ -36,8 +52,8 @@ while (0)
 #define	FILE_IS_ELF32(h)	(h.e_ident[EI_CLASS] == 1)
 
 /* Extern variables */
-extern struct elf32_hdr		header_elf;
-extern struct elf64_hdr		header_elf64;
+extern Elf32_Ehdr		header_elf;
+extern Elf64_Ehdr		header_elf64;
 extern struct exec		header_aout;
 extern int			header_size;
 extern void			*header;

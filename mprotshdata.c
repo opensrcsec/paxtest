@@ -21,7 +21,8 @@ void doit( void )
 	fptr func;
 
 	/* Try to make the memory region executable by using mprotect() */
-	do_mprotect( &bufdata, 1, PROT_EXEC );
+	/* Due to an OpenBSD bug PROT_READ is required */
+	do_mprotect( &bufdata, 1, PROT_READ|PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)&bufdata;

@@ -10,7 +10,7 @@
 #include <sys/mman.h>
 
 
-#ifdef __OpenBSD__
+#ifndef MAP_ANONYMOUS
 #define MAP_ANONYMOUS MAP_ANON
 #endif
 
