@@ -78,6 +78,7 @@ getamap.o: getamap.c
 
 getmain1: getmain.o
 	$(CC) $(LDFLAGS) -o $@ $+
+	./chpax -X $@
 
 getmain2: crt1S.o interp.o getmain2.o
 	$(CC) -shared -o $@ $+

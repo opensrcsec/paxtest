@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/mman.h>
 #include "body.h"
 
@@ -14,15 +15,23 @@ char *testname = "Writable text segments                   ";
 
 extern int shlibtest( void );
 
+static void sigsegv( int sig )
+{
+	printf( "Killed\n" );
+	exit( 1 );
+}
+
 void doit( void )
 {
 	char *buf;
 	char c;
 
-	/* Try to make the data executable first by using mprotect */
-	do_mprotect( shlibtest, 1, PROT_WRITE );
+	signal( SIGSEGV, sigsegv );
 
-	buf = (char *)shlibtest;
+	/* Try to make the text writable first by using mprotect */
+	do_mprotect( buf, 4096, PROT_READ|PROT_WRITE|PROT_EXEC );
+
+	buf = (char*)shlibtest;
 
 	/* Try to write something */
 	*buf = 'X';

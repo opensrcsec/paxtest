@@ -35,6 +35,8 @@ void doit( void )
 	/* Call the code in the buffer */
 	func();
 
+	do_mprotect( buf, 1, PROT_READ|PROT_WRITE );
+
 	/* It worked when the function returns */
 	itworked();
 }

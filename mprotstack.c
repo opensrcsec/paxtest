@@ -24,7 +24,7 @@ void doit( void )
 	func = (void (*)(void))&buf;
 
 	/* Try to make the stack executable first */
-	do_mprotect( &buf, 1, PROT_EXEC );
+	do_mprotect( &buf, 1, PROT_READ|PROT_WRITE|PROT_EXEC );
 
 	/* Call the code in the buffer */
 	func();
