@@ -1,9 +1,9 @@
 Choose one of the following make targets:
 
 adamantix	Adamantix
-redhat-taroon	Red Hat taroon (use generic for earlier versions)
-gentoo		Gentoo without hardened gcc
-gentoo-hardened	Gentoo with hardened gcc enabled
-generic		For other distributions
+gentoo		Gentoo
+openbsd		OpenBSD
+generic		For other Linux distributions
+
 clean		Clean up
 

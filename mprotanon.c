@@ -1,7 +1,7 @@
 /* mprotanon.c - Tests wether code can be executed in anonymous mappings
  *               after trying to use mprotect() to make it executable.
  *
- * Copyright (c)2003 by Peter Busser <peter@adamantix.org>
+ * Copyright (c)2003,2004 by Peter Busser <peter@adamantix.org>
  * This file has been released under the GNU Public Licence version 2 or later
  */
 
@@ -11,6 +11,10 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include "body.h"
+
+#ifdef __OpenBSD__
+#define MAP_ANONYMOUS MAP_ANON
+#endif
 
 char *testname = "Executable anonymous mapping (mprotect)  ";
 
@@ -31,7 +35,25 @@ void doit( void )
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;
 
-	/* Try to make the anonymous mapping executable first by using mprotect */
+	/* Try to make the anonymous mapping executable first by using
+	 * mprotect.
+	 *
+	 * Some people like to disable this call to make the results look
+	 * better for their system.
+	 *
+	 * The whole purpose of this call is to figure out how the system
+	 * handles mprotect() calls. If it allows the application to use
+	 * mprotect() to override kernel settings, then that is something
+	 * the user of this test suite may like to know.
+	 *
+	 * And yes, I know that this is how UNIX is supposed to work and that
+	 * it is a design decision to allow this override. All the more reason
+	 * to be honest and open about it and to tell the user why (s)he has
+	 * to trade in a bit of security for compatibility.
+	 *
+	 * But then, it is of course easier to simply disable this mprotect()
+	 * call than to fix your kernel and userland.
+	 */
 	do_mprotect( buf, 1, PROT_EXEC );
 
 	/* Call the code in the buffer */

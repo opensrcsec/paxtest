@@ -5,22 +5,20 @@
 # This file has been released under the GNU Public Licence version 2 or later
 
 all:
-	cat targets
+	@cat targets
 
 adamantix:
 	make -f Makefile.Adamantix
 
-redhat-taroon:
-	make -f Makefile.RedHat-taroon
-
-gentoo: generic
-
-gentoo-hardened:
-	make -f Makefile.Gentoo-hardened
+gentoo:
+	make -f Makefile.Gentoo
 
 generic:
 	make -f Makefile.generic
 
+openbsd:
+	make -f Makefile.OpenBSD
+
 clean:
-	make -f Makefile.generic clean
+	make -f Makefile.Adamantix clean
 

@@ -8,6 +8,7 @@ RUNDIR=.
 endif
 
 CFLAGS+=-DRUNDIR=\"${RUNDIR}\"
+LDFLAGS+=-lpthread
 
 
 TESTS=	anonmap \
@@ -64,7 +65,7 @@ all: chpax $(SHLIBS) $(TESTS) $(UTILS) paxtest
 clean:
 	-rm -f *.o $(CHPAX)/*.o *.s *~ core
 	-rm -f $(SHLIBS) $(TESTS) $(UTILS)
-	-rm -f paxtest chpax paxtest.log a.out dumpspecs
+	-rm -f dumpspecs paxtest chpax paxtest.log a.out
 
 ifdef DESTDIR
 ifdef BINDIR

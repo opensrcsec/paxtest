@@ -10,6 +10,7 @@ endif
 # The Adamantix GCC compiler has stack protector on by default, this could
 # interfere with the results of this test.
 CFLAGS+=-DRUNDIR=\"${RUNDIR}\" -fno-stack-protector
+LDFLAGS+=-lpthread
 
 
 TESTS=	anonmap \
@@ -66,7 +67,7 @@ all: chpax $(SHLIBS) $(TESTS) $(UTILS) paxtest
 clean:
 	-rm -f *.o $(CHPAX)/*.o *.s *~ core
 	-rm -f $(SHLIBS) $(TESTS) $(UTILS)
-	-rm -f paxtest chpax paxtest.log a.out
+	-rm -f dumpspecs paxtest chpax paxtest.log a.out
 
 ifdef DESTDIR
 ifdef BINDIR
@@ -103,7 +104,7 @@ getheap1: getheap.o
 	$(CC) $(LDFLAGS) -o $@ $+
 
 getheap2: getheap.o
-	$(CC) -etdyn -o $@ $+
+	$(CC) -o $@ $+
 
 getheap.o: getheap.c
 	$(CC) $(CFLAGS) -fPIC -DPIC -o $@ -c $<
@@ -111,11 +112,11 @@ getheap.o: getheap.c
 getamap.o: getamap.c
 
 getmain1: getmain.o
-	$(CC) $(LDFLAGS) -o $@ $+
-	./chpax -X $@
+	$(CC) $(LDFLAGS) -etexec -o $@ $+
+	./chpax -SPRXM $@
 
 getmain2: getmain2.o
-	$(CC) -etdyn -o $@ $+
+	$(CC) -o $@ $+
 
 getmain2.o: getmain.c
 	$(CC) $(CFLAGS) -fPIC -DPIC -o $@ -c $<
@@ -124,13 +125,13 @@ getshlib: getshlib.o -ldl
 
 getstack1: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $+
-	./chpax -S $@
+	./chpax -SRp $@
 
 getstack2: getstack1 chpax
 	rm -f $@
 	cp getstack1 $@
 	chmod +x $@
-	./chpax -P $@
+	./chpax -PRs $@
 
 mprotanon: body.o mprotanon.o
 
@@ -166,13 +167,13 @@ rettofunc1: body.o rettofunc1.o
 
 rettofunc1x: body.o rettofunc1x.o
 	$(CC) $(LDFLAGS) -o $@ $+
-	./chpax -X $@
+	./chpax -SPXM $@
 
 rettofunc2: body.o rettofunc2.o
 
 rettofunc2x: body.o rettofunc2x.o
 	$(CC) $(LDFLAGS) -o $@ $+
-	./chpax -X $@
+	./chpax -SPXM $@
 
 shlibtest.o: shlibtest.c
 	$(CC) $(CFLAGS) -fPIC -DPIC -c $< -o $@

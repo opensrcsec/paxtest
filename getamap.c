@@ -10,6 +10,10 @@
 #include <sys/mman.h>
 
 
+#ifdef __OpenBSD__
+#define MAP_ANONYMOUS MAP_ANON
+#endif
+
 int main( int argc, char *argv[] )
 {
 	char *buf;

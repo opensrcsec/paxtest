@@ -1,13 +1,14 @@
 #!/usr/bin/make
 
 CC=gcc
-CFLAGS=-O2
+CFLAGS=
 LDFLAGS=
 ifndef RUNDIR
 RUNDIR=.
 endif
 
-CFLAGS+=-DRUNDIR=\"${RUNDIR}\"
+CFLAGS+=-DRUNDIR=\"${RUNDIR}\" -fno-stack-protector
+LDFLAGS+=-lpthread
 
 
 TESTS=	anonmap \
@@ -24,9 +25,7 @@ TESTS=	anonmap \
 	mprotstack \
 	randamap \
 	randheap1 \
-	randheap2 \
 	randmain1 \
-	randmain2 \
 	randshlib \
 	randstack1 \
 	randstack2 \
@@ -34,6 +33,10 @@ TESTS=	anonmap \
 	rettofunc1x \
 	rettofunc2 \
 	rettofunc2x \
+	rettofunc3 \
+	rettofunc3x \
+	rettofunc4 \
+	rettofunc4x \
 	shlibbss \
 	shlibdata \
 	writetext
@@ -47,24 +50,15 @@ UTILS=	getamap \
 	getstack1 \
 	getstack2
 
-CHPAX:=chpax-0.5
-
-CHPAXSRC:=$(CHPAX)/aout.c \
-	$(CHPAX)/chpax.c \
-	$(CHPAX)/elf32.c \
-	$(CHPAX)/elf64.c \
-	$(CHPAX)/flags.c \
-	$(CHPAX)/io.c
-
 SHLIBS=	shlibtest.so \
 	shlibtest2.so
 
-all: chpax $(SHLIBS) $(TESTS) $(UTILS) paxtest
+all: $(SHLIBS) $(TESTS) $(UTILS) paxtest
 
 clean:
-	-rm -f *.o $(CHPAX)/*.o *.s *~ core
+	-rm -f *.o *.s *~ core
 	-rm -f $(SHLIBS) $(TESTS) $(UTILS)
-	-rm -f paxtest chpax paxtest.log a.out
+	-rm -f paxtest paxtest.log a.out
 
 ifdef DESTDIR
 ifdef BINDIR
@@ -84,9 +78,6 @@ paxtest: $(TESTS) genpaxtest
 
 anonmap: body.o anonmap.o
 
-chpax: $(CHPAXSRC:.c=.o)
-	$(CC) $(LDFLAGS) -o $@ $+
-
 execbss: body.o execbss.o
 
 execdata: body.o execdata.o
@@ -99,34 +90,31 @@ getheap1: getheap.o
 	$(CC) $(LDFLAGS) -o $@ $+
 
 getheap2: getheap.o
-	$(CC) -pie -o $@ $+
+	$(CC) -shared -o $@ $+
 
 getheap.o: getheap.c
-	$(CC) $(CFLAGS) -fPIC -DPIC -o $@ -c $<
+	$(CC) $(CFLAGS) -fPIC -o $@ -c $<
 
 getamap.o: getamap.c
 
 getmain1: getmain.o
 	$(CC) $(LDFLAGS) -o $@ $+
-	./chpax -X $@
 
 getmain2: getmain2.o
-	$(CC) -pie -o $@ $+
+	$(CC) -shared -o $@ $+
 
 getmain2.o: getmain.c
-	$(CC) $(CFLAGS) -fPIC -DPIC -o $@ -c $<
+	$(CC) $(CFLAGS) -fPIC -o $@ -c $<
 
-getshlib: getshlib.o -ldl
+getshlib: getshlib.o
 
 getstack1: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $+
-	./chpax -S $@
 
-getstack2: getstack1 chpax
+getstack2: getstack1
 	rm -f $@
 	cp getstack1 $@
 	chmod +x $@
-	./chpax -P $@
 
 mprotanon: body.o mprotanon.o
 
@@ -162,19 +150,27 @@ rettofunc1: body.o rettofunc1.o
 
 rettofunc1x: body.o rettofunc1x.o
 	$(CC) $(LDFLAGS) -o $@ $+
-	./chpax -X $@
 
 rettofunc2: body.o rettofunc2.o
 
 rettofunc2x: body.o rettofunc2x.o
 	$(CC) $(LDFLAGS) -o $@ $+
-	./chpax -X $@
+
+rettofunc3: body.o rettofunc3.o
+
+rettofunc3x: body.o rettofunc3x.o
+	$(CC) $(LDFLAGS) -o $@ $+
+
+rettofunc4: body.o rettofunc4.o
+
+rettofunc4x: body.o rettofunc4x.o
+	$(CC) $(LDFLAGS) -o $@ $+
 
 shlibtest.o: shlibtest.c
-	$(CC) $(CFLAGS) -fPIC -DPIC -c $< -o $@
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
 shlibtest2.o: shlibtest2.c
-	$(CC) $(CFLAGS) -fPIC -DPIC -c $< -o $@
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
 shlibtest.so: shlibtest.o
 	$(CC) $(SHLDFLAGS) -shared -o $@ $+
@@ -182,9 +178,9 @@ shlibtest.so: shlibtest.o
 shlibtest2.so: shlibtest2.o
 	$(CC) $(SHLDFLAGS) -shared -o $@ $+
 
-shlibbss: body.o shlibbss.o shlibtest.so shlibtest2.so -ldl
+shlibbss: body.o shlibbss.o shlibtest.so shlibtest2.so
 
-shlibdata: body.o shlibdata.o shlibtest.so shlibtest2.so -ldl
+shlibdata: body.o shlibdata.o shlibtest.so shlibtest2.so
 
 writetext: body.o writetext.o shlibtest.so
 

@@ -13,6 +13,10 @@
 
 char *testname = "Executable anonymous mapping             ";
 
+#ifdef __OpenBSD__
+#define MAP_ANONYMOUS MAP_ANON
+#endif
+
 void doit( void )
 {
 	char *buf;

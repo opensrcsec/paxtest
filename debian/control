@@ -2,7 +2,7 @@ Source: paxtest
 Section: main
 Priority: optional
 Maintainer: Peter Busser <peter@adamantix.org>
-Build-Depends: debhelper (>> 3.0.0)
+Build-Depends: debhelper (>> 3.0.0), gcc, binutils
 Standards-Version: 3.5.2
 
 Package: paxtest
@@ -14,13 +14,11 @@ Description: a-: Test suite for the PaX kernel patch
  application and does not implement any enforcement. Especially buffer overflow
  attacks benefit from the absense of kernel enforced memory control. PaX tries
  to do its best to enforce this control of memory used by applications, thereby
- making it harder to succesfully exploit buffer overflows.
+ making it harder to successfully exploit buffer overflows.
  .
- Furthermore, it adds several randomisations, which also make it harder for
- buffer overflows to succeed.
+ Paxtest provides a regression test suite that covers most (but not all)
+ of PaX functionality. It can also be used to test other memory protection
+ patches.
  .
- The test programs test all this functionality, but not all PaX functionality
- is covered.
- .
- For more information about PaX, see http://pageexec.virtualave.net/.
+ For more information about PaX, see http://pax.grsecurity.net/.
 

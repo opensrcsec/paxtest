@@ -9,6 +9,12 @@
 #define __USE_GNU
 #include <dlfcn.h>
 
+
+#ifdef __OpenBSD__
+#define RTLD_DEFAULT   ((void *) 0)
+#endif 
+
+
 int main( int argc, char *argv[] )
 {
 	void *handle;

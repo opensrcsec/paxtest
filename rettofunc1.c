@@ -21,6 +21,12 @@ void doit( void )
 {
 	char buf[4];
 
-	strcpy( buf, (const char *)overflow );
+	if (strlen((const char *)overflow) > 4) {
+		strcpy( buf, (const char *)overflow );
+	} else {
+		fprintf( stderr, "paxtest: bad luck, try different "
+			"compiler options.\n" );
+		exit(1);
+	}
 }
 
