@@ -109,7 +109,7 @@ getheap1: getheap.o
 	$(CC) $(LDFLAGS) -o $@ $+
 
 getheap2: getheap.o
-	$(CC) -shared -etdyn -o $@ $+
+	$(CC) -etdyn -o $@ $+
 
 getheap.o: getheap.c
 	$(CC) $(CFLAGS) -fPIC -DPIC -o $@ -c $<
@@ -121,7 +121,7 @@ getmain1: getmain.o
 	./chpax -X $@
 
 getmain2: getmain2.o
-	$(CC) -shared -etdyn -o $@ $+
+	$(CC) -etdyn -o $@ $+
 
 getmain2.o: getmain.c
 	$(CC) $(CFLAGS) -fPIC -DPIC -o $@ -c $<
@@ -172,13 +172,13 @@ rettofunc1: body.o rettofunc1.o
 
 rettofunc1x: body.o rettofunc1x.o
 	$(CC) $(LDFLAGS) -o $@ $+
-	chpax -X $@
+	./chpax -X $@
 
 rettofunc2: body.o rettofunc2.o
 
 rettofunc2x: body.o rettofunc2x.o
 	$(CC) $(LDFLAGS) -o $@ $+
-	chpax -X $@
+	./chpax -X $@
 
 shlibtest.o: shlibtest.c
 	$(CC) $(CFLAGS) -fPIC -DPIC -c $< -o $@

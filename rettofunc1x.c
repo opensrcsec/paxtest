@@ -14,7 +14,7 @@ fptr overflow[32] = {
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
-	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked
+	itworked, itworked, itworked, itworked, itworked, itworked, itworked, NULL
 };
 
 void doit( void )

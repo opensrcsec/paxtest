@@ -5,6 +5,8 @@ paxtest (0.9.4-1) unstable; urgency=low
   * Fixed shared library data/bss tests (pageexec@freemail.hu)
   * Introduced return-to-libc detection as proof-of-concept (pageexec@freemail.hu)
 
+ -- Peter Busser <peter@adamantix.org>  xxx, xx Oct 2003 xx:xx:xx +0200
+
 paxtest (0.9.3-1) unstable; urgency=low
 
   * Changed e-mail addresses in source files to peter@adamantix.org
