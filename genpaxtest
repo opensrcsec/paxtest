@@ -1,0 +1,29 @@
+#!/bin/sh
+
+echo $RUNDIR
+if [ "${RUNDIR}" == "" ]
+then
+	RUNDIR=.
+fi
+
+cat << __here__ > paxtest
+#!/bin/sh
+
+LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}:${RUNDIR}
+export LD_LIBRARY_PATH
+
+echo "It may take a while for the tests to complete"
+
+for i in $*
+do
+	${RUNDIR}/\$i
+done >paxtest.log 2>&1
+
+echo "Test results:"
+cat paxtest.log
+__here__
+
+chmod 755 paxtest
+
+exit 0
+

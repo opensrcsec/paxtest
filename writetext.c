@@ -26,12 +26,12 @@ void doit( void )
 	char *buf;
 	char c;
 
+	buf = (char*)shlibtest;
+
 	signal( SIGSEGV, sigsegv );
 
 	/* Try to make the text writable first by using mprotect */
 	do_mprotect( buf, 4096, PROT_READ|PROT_WRITE|PROT_EXEC );
-
-	buf = (char*)shlibtest;
 
 	/* Try to write something */
 	*buf = 'X';

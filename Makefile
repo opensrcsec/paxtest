@@ -1,6 +1,16 @@
+#!/usr/bin/make
+
+ifndef CC
 CC=gcc
-CFLAGS=-ggdb -O2
+endif
+ifndef CFLAGS
+CFLAGS=-O2
+endif
+ifndef LDFLAGS
 LDFLAGS=
+endif
+CFLAGS+=-DRUNDIR=\"${RUNDIR}\"
+
 
 TESTS=	anonmap \
 	execbss \
@@ -27,8 +37,7 @@ TESTS=	anonmap \
 	shlibdata \
 	writetext
 
-UTILS=	chpax \
-	getamap \
+UTILS=	getamap \
 	getheap \
 	getmain1 \
 	getmain2 \
@@ -47,15 +56,28 @@ CHPAXSRC:=$(CHPAX)/aout.c \
 
 SHLIBS=	shlibtest.so
 
-all: $(SHLIBS) $(TESTS) $(UTILS) runtests
-
-runtests: $(TESTS) genruntests
-	sh genruntests $(TESTS)
+all: chpax $(SHLIBS) $(TESTS) $(UTILS) paxtest
 
 clean:
 	-rm -f *.o $(CHPAX)/*.o *.s *~ core
 	-rm -f $(SHLIBS) $(TESTS) $(UTILS)
-	-rm -f runtests mptest.log a.out
+	-rm -f paxtest chpax paxtest.log a.out
+
+ifdef DESTDIR
+ifdef BINDIR
+ifdef RUNDIR
+install: all
+	mkdir -p $(DESTDIR)/$(RUNDIR)
+	cp $(SHLIBS) $(TESTS) $(UTILS) $(DESTDIR)/$(RUNDIR)
+	mkdir -p $(DESTDIR)/$(BINDIR)
+	cp paxtest $(DESTDIR)/$(BINDIR)
+	chmod 755 $(DESTDIR)/$(BINDIR)/paxtest
+endif
+endif
+endif
+
+paxtest: $(TESTS) genpaxtest
+	sh genpaxtest $(TESTS)
 
 anonmap: body.o anonmap.o
 
