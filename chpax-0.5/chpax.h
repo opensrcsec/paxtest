@@ -13,7 +13,7 @@
 #include <linux/elf.h>
 #include <linux/a.out.h>
 
-#define	CHPAX_VERSION		"0.4"
+#define	CHPAX_VERSION		"0.5"
 
 #define HF_PAX_PAGEEXEC         1    /* 0: Paging based non-exec pages */
 #define HF_PAX_EMUTRAMP         2    /* 0: Emulate trampolines */
@@ -57,3 +57,4 @@ void			put_flags_elf64(unsigned long flags);
 void			usage(char *name);
 unsigned long		scan_flags(unsigned long flags, char **argv, int *view);
 void			print_flags(unsigned long flags);
+char			*pax_short_flags(unsigned long flags);

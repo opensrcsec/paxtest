@@ -1,4 +1,4 @@
-/* anonmap.c - Test wether code can be executed in anonymous mappings 
+/* anonmap.c - Tests wether code can be executed in anonymous mappings
  *
  * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
  */

@@ -110,6 +110,21 @@ unsigned long	   scan_flags(unsigned long flags, char **argv, int *view)
 }
 
 
+char *pax_short_flags(unsigned long flags)
+{
+  static char buffer[7];
+
+  snprintf(buffer, sizeof(buffer), "%c%c%c%c%c%c",
+	 flags & HF_PAX_PAGEEXEC ? 'p' : 'P',
+	 flags & HF_PAX_EMUTRAMP ? 'E' : 'e',
+	 flags & HF_PAX_MPROTECT ? 'm' : 'M',
+	 flags & HF_PAX_RANDMMAP ? 'r' : 'R',
+	 flags & HF_PAX_RANDEXEC ? 'X' : 'x',
+	 flags & HF_PAX_SEGMEXEC ? 's' : 'S');
+  return buffer;
+}
+
+
 void		print_flags(unsigned long flags)
 {
   printf(" * Paging based PAGE_EXEC       : %s \n"
@@ -131,15 +146,3 @@ void		print_flags(unsigned long flags)
 	 flags & HF_PAX_SEGMEXEC
 	 ? "disabled" : "enabled");
 }
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,5 @@
-/* anonmap.c - Test wether code can be executed in anonymous mappings 
+/* mprotanon.c - Tests wether code can be executed in anonymous mappings
+ *               after trying to use mprotect() to make it executable.
  *
  * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
  */
@@ -28,6 +29,9 @@ void doit( void )
 
 	/* Convert the pointer to a function pointer */
 	func = (void (*)(void))buf;
+
+	/* Try to make the anonymous mapping executable first by using mprotect */
+	do_mprotect( &buf, 1, PROT_EXEC );
 
 	/* Call the code in the buffer */
 	func();

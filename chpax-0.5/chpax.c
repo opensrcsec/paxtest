@@ -1,5 +1,5 @@
 /*
- * chpax version 0.4
+ * chpax version 0.5
  *
  * This program manages various PaX related flags for ELF32, ELF64, 
  * and a.out binaries. The flags only have effect when running the 
@@ -66,8 +66,8 @@ int		 main(int argc, char *argv[])
 
       if (view)
 	{
-	  printf("\n----[ chpax %s : Current flags for %s ]---- \n\n", 
-		 CHPAX_VERSION, current);
+	  printf("\n----[ chpax %s : Current flags for %s (%s) ]---- \n\n", 
+		 CHPAX_VERSION, current, pax_short_flags(aflags));
 	  print_flags(aflags);
 	  puts("");
 	}
@@ -84,8 +84,8 @@ int		 main(int argc, char *argv[])
 	fprintf(stderr, "%s : Flags were not updated . \n", current);
       else if (view && aflags != flags)
 	{
-	  printf("\n----[ chpax %s : Updated flags for %s ]---- \n\n", 
-		 CHPAX_VERSION, current);
+	  printf("\n----[ chpax %s : Updated flags for %s (%s) ]---- \n\n", 
+		 CHPAX_VERSION, current, pax_short_flags(flags));
 	  print_flags(flags);
 	  puts("");
 	}

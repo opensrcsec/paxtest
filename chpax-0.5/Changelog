@@ -11,3 +11,5 @@
  * Mar 2003: Added parisc support.
  *
  * Apr 2003: Added ppc support.
+ *
+ * Oct 2003: Added amd64, ia64 and make install support, short format flags printout.

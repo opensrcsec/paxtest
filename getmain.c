@@ -8,7 +8,7 @@
 
 void foo( int unused )
 {
-	printf( "0x%08x\n", ((unsigned int*)&unused)[-1] );
+	printf( "0x%08x\n", ((unsigned long*)&unused)[-1] );
 }
 
 int main( int argc, char *argv[] )

@@ -6,6 +6,9 @@
 */
 #include "chpax.h"
 
+#ifndef EM_X86_64
+#define EM_X86_64 	62
+#endif
 
 /* Read flags */
 int			read_header(char *name, int mode)
@@ -39,7 +42,9 @@ int			read_header(char *name, int mode)
 	  return 2;
 	if (header_elf64.e_machine != EM_SPARC && 
 	    header_elf64.e_machine != EM_SPARCV9 &&
-	    header_elf64.e_machine != EM_ALPHA)
+	    header_elf64.e_machine != EM_ALPHA &&
+	    header_elf64.e_machine != EM_X86_64 &&
+	    header_elf64.e_machine != EM_IA_64)
 	  return 3;
 	header = &header_elf64;
 	header_size = sizeof(header_elf64);

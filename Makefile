@@ -51,7 +51,7 @@ UTILS=	getamap \
 	getstack1 \
 	getstack2
 
-CHPAX:=chpax-0.4
+CHPAX:=chpax-0.5
 
 CHPAXSRC:=$(CHPAX)/aout.c \
 	$(CHPAX)/chpax.c \

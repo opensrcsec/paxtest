@@ -59,7 +59,7 @@ int do_mprotect( const void *addr, size_t len, int prot )
 	int retval;
 
 	/* Allign to a multiple of PAGESIZE, assumed to be a power of two */
-	ptr = (char *)(((unsigned int) addr) & ~(PAGESIZE-1));
+	ptr = (char *)(((unsigned long) addr) & ~(PAGESIZE-1));
 
 	retval = mprotect( ptr, len, prot );
 	if( retval != 0 && errno == EINVAL ) {
