@@ -2,6 +2,8 @@
 
 GCC_SPCS:=$(shell gcc -dumpspecs > dumpspecs)
 CC := gcc -specs=dumpspecs
+# test does not work on gcc-3.3.2, but works on gcc-2.96 (for me), so better define it
+CC_PIE := $(shell if $(CC) -pie -o /dev/null -xc /dev/null >/dev/null 2>&1; then echo "-pie"; else echo "-shared crt1S.o interp.o"; fi ;)
 
 CFLAGS  := -O2
 LDFLAGS :=
@@ -78,6 +80,7 @@ paxtest: $(TESTS) genpaxtest
 	sh genpaxtest $(TESTS)
 
 crt1S.o: crt1S.S
+	$(CC) $(CFLAGS) -fPIC -o $@ -c $<
 
 anonmap: body.o anonmap.o
 
@@ -93,7 +96,8 @@ getheap1: getheap.o
 	$(CC) $(LDFLAGS) -o $@ $+
 
 getheap2: crt1S.o interp.o getheap.o
-	$(CC) -shared -o $@ $+
+	@#$(CC) -shared -o $@ $+
+	$(CC) $(CC_PIE) -o $@ getheap.o
 
 getheap.o: getheap.c
 	$(CC) $(CFLAGS) -fPIC -DPIC -o $@ -c $<
@@ -105,7 +109,8 @@ getmain1: getmain.o
 	chpax -X $@
 
 getmain2: crt1S.o interp.o getmain2.o
-	$(CC) -shared -o $@ $+
+	@#$(CC) -shared -o $@ $+
+	$(CC) $(CC_PIE) -o $@ getmain2.o
 
 getmain2.o: getmain.c
 	$(CC) $(CFLAGS) -fPIC -DPIC -o $@ -c $<
