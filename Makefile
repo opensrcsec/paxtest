@@ -14,6 +14,7 @@ TESTS=	anonmap \
 	mprotshbss \
 	mprotshdata \
 	mprotstack \
+	randamap \
 	randheap \
 	randmain \
 	randshlib \
@@ -21,9 +22,11 @@ TESTS=	anonmap \
 	rettofunc1 \
 	rettofunc2 \
 	shlibbss \
-	shlibdata
+	shlibdata \
+	writetext
 
-UTILS=	getheap \
+UTILS=	getamap \
+	getheap \
 	getmain \
 	getshlib \
 	getstack
@@ -40,6 +43,8 @@ clean:
 
 anonmap: body.o anonmap.o
 
+crt1S.o: crt1S.S
+
 execbss: body.o execbss.o
 
 execdata: body.o execdata.o
@@ -50,9 +55,15 @@ execstack: body.o execstack.o
 
 getheap: getheap.o
 
-getmain: getmain.o
+getamap.o: getamap.c
 
-getshlib: getshlib.o
+getmain.o: getmain.c
+	$(CC) $(CFLAGS) -fPIC -DPIC -c $<
+
+getmain: crt1S.o interp.o getmain.o
+	$(CC) -shared -o $@ $+
+
+getshlib: getshlib.o -ldl
 
 getstack: getstack.o
 
@@ -69,6 +80,8 @@ mprotshbss: body.o mprotshbss.o shlibtest.so
 mprotshdata: body.o mprotshdata.o shlibtest.so
 
 mprotstack: body.o mprotstack.o
+
+randamap: randbody.o randamap.o
 
 randheap: randbody.o randheap.o
 
@@ -91,3 +104,6 @@ shlibtest.so: shlibtest.o
 shlibbss: body.o shlibbss.o shlibtest.so
 
 shlibdata: body.o shlibdata.o shlibtest.so
+
+writetext: body.o writetext.o shlibtest.so
+

@@ -10,7 +10,7 @@
 
     - .text section of ET_DYN ELF file mappings can be made writable once
     - .text section of the main executable can be made writable once
-    - .text section of any ELF file mapping cannot made writable
+    + .text section of any ELF file mapping cannot be made writable
 
     + .data section of the main executable cannot be made executable
     + .bss section of the main executable cannot be made executable
@@ -31,7 +31,7 @@
 
     - mmap(PROT_EXEC|PROT_WRITE) creates a rw- mapping (silent removal of x)
     + mmap(~MAP_FIXED) returns a randomized address for file mappings
-    - mmap(~MAP_FIXED) returns a randomized address for anonymous mappings
+    + mmap(~MAP_FIXED) returns a randomized address for anonymous mappings
       if a 0 hint was specified
     + stack is at a randomized address
     + main executable is at a randomized address (for both ET_EXEC and ET_DYN

@@ -9,7 +9,7 @@
 int main( int argc, char *argv[] ){
 	char a;
 
-	printf( "0x%08x\n", &a );
+	printf( "%p\n", &a );
 
 	exit( 0 );
 }

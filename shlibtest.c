@@ -7,3 +7,8 @@ char bufbss;
 
 char bufdata = '\xc3';
 
+/* A function which does nothing, it only exists so it can be referenced */
+int shlibtest( void )
+{
+	return 1;
+}

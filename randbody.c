@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 
-#define COUNT	(100)
+#define COUNT	(25)
 
 extern char *testname;
 extern char *testprog;
@@ -14,7 +14,6 @@ int main( int argc, char *argv[] )
 {
 	FILE *fp;
 	int i;
-	unsigned long results[COUNT];
 	unsigned long tmp;
 	unsigned long and;
 	unsigned long or;
@@ -32,7 +31,6 @@ int main( int argc, char *argv[] )
 		}
 
 		fscanf( fp, "%lx", &tmp );
-		results[i] = tmp;
 
 		and &= tmp;
 		or |= tmp;

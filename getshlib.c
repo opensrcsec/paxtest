@@ -5,8 +5,23 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#define __USE_GNU
+#include <dlfcn.h>
 
 int main( int argc, char *argv[] )
 {
-	printf( "0x%08x\n", printf );
+	void *handle;
+
+	handle = dlopen( RTLD_DEFAULT, RTLD_LAZY );
+	if( handle != NULL ) {
+		void *sprintf;
+	       
+		sprintf = dlsym( handle, "sprintf" );
+
+		if( dlerror() == NULL ) {
+			printf( "%0p\n", sprintf );
+		}
+
+		dlclose( handle );
+	}
 }
