@@ -30,11 +30,11 @@
     - .rodata section of the kernel is read-only
 
     - mmap(PROT_EXEC|PROT_WRITE) creates a rw- mapping (silent removal of x)
-    - mmap(~MAP_FIXED) returns a randomized address for file mappings
+    + mmap(~MAP_FIXED) returns a randomized address for file mappings
     - mmap(~MAP_FIXED) returns a randomized address for anonymous mappings
       if a 0 hint was specified
-    - stack is at a randomized address
-    - main executable is at a randomized address (for both ET_EXEC and ET_DYN
+    + stack is at a randomized address
+    + main executable is at a randomized address (for both ET_EXEC and ET_DYN
       ELF files)
     - task's kernel stack pointer is at a randomized address, and it changes
       on every system call

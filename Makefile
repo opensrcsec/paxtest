@@ -14,20 +14,29 @@ TESTS=	anonmap \
 	mprotshbss \
 	mprotshdata \
 	mprotstack \
+	randheap \
+	randmain \
+	randshlib \
+	randstack \
 	rettofunc1 \
 	rettofunc2 \
 	shlibbss \
 	shlibdata
 
+UTILS=	getheap \
+	getmain \
+	getshlib \
+	getstack
+
 SHLIBS=	shlibtest.so
 
-all: $(SHLIBS) $(TESTS) runtests
+all: $(SHLIBS) $(TESTS) $(UTILS) runtests
 
 runtests: $(TESTS) genruntests
 	sh genruntests $(TESTS)
 
 clean:
-	-rm -f *.o *.s *~ core $(SHLIBS) $(TESTS) runtests mptest.log
+	-rm -f *.o *.s *~ core $(SHLIBS) $(TESTS) $(UTILS) runtests mptest.log
 
 anonmap: body.o anonmap.o
 
@@ -38,6 +47,14 @@ execdata: body.o execdata.o
 execheap: body.o execheap.o
 
 execstack: body.o execstack.o
+
+getheap: getheap.o
+
+getmain: getmain.o
+
+getshlib: getshlib.o
+
+getstack: getstack.o
 
 mprotanon: body.o mprotanon.o
 
@@ -52,6 +69,14 @@ mprotshbss: body.o mprotshbss.o shlibtest.so
 mprotshdata: body.o mprotshdata.o shlibtest.so
 
 mprotstack: body.o mprotstack.o
+
+randheap: randbody.o randheap.o
+
+randmain: randbody.o randmain.o
+
+randshlib: randbody.o randshlib.o
+
+randstack: randbody.o randstack.o
 
 rettofunc1: body.o rettofunc1.o
 

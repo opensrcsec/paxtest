@@ -1,4 +1,5 @@
-/* body.c - The test program body
+/* body.c - This part shared by the test programs (except for the randomisation
+ *          tests)
  *
  * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
  */
@@ -24,19 +25,19 @@ int main( int argc, char *argv[] )
 	doit();
 
 	/* Probably never reached */
-	printf( " Failed\n" );
+	printf( "Failed\n" );
 	exit( 0 );
 }
 
 void itworked( void )
 {
-	printf( " Vulnerable\n" );
+	printf( "Vulnerable\n" );
 	exit( 1 );
 }
 
 void itfailed( void )
 {
-	printf( " Ok\n" );
+	printf( "Ok\n" );
 	exit( 2 );
 }
 

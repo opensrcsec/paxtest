@@ -6,6 +6,8 @@ cat << __here__ > runtests
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:.
 export LD_LIBRARY_PATH
 
+echo "It may take a while for the tests to complete"
+
 for i in $*
 do
 	./\$i
