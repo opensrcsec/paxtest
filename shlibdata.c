@@ -5,10 +5,10 @@
  * This file has been released under the GNU Public Licence version 2 or later
  */
 
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#define __USE_GNU
 #include <dlfcn.h>
 #include "body.h"
 

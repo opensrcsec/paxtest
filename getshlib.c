@@ -9,9 +9,7 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 
-/* OpenBSD 3.5 doesn't define RTLD_DEFAULT */
-/* OpenBSD 3.6 defines but doesn't actually handle (segfaults on) RTLD_DEFAULT, sigh... */
-#ifdef __OpenBSD__
+#ifndef RTLD_DEFAULT
 #define RTLD_DEFAULT "libc.so"
 #endif
 

@@ -1,0 +1,2 @@
+paxctl $*
+chpax $* 2>/dev/null ||:

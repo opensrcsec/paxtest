@@ -25,11 +25,10 @@ void doit( void )
 	}
 
 	/* Put a RETN instruction in the buffer */
-	*buf = '\xc3';
+	*buf = buf_retn;
 
 	/* Try to make the buffer executable by using mprotect() */
-	/* Due to a FreeBSD bug PROT_READ is required */
-	do_mprotect( buf, 1, PROT_READ|PROT_EXEC );
+	do_mprotect( buf, 1, PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;

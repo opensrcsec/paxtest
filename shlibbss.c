@@ -5,10 +5,10 @@
  * This file has been released under the GNU Public Licence version 2 or later
  */
 
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#define __USE_GNU
 #include <dlfcn.h>
 #include "body.h"
 
@@ -38,8 +38,8 @@ void doit( void )
 	dlclose( handle );
 
 	/* Put a RETN instruction in the buffer */
-	*bufbss = '\xc3';
-	*bufbss2 = '\xc3';
+	*bufbss = buf_retn;
+	*bufbss2 = buf_retn;
 
 	/* Convert the pointer to a function pointer */
 	func = bufbss < bufbss2 ? (fptr)bufbss : (fptr)bufbss2;

@@ -24,7 +24,8 @@ void doit( void )
 	if (strlen((const char *)overflow) > 4) {
 		strcpy( buf, (const char *)overflow );
 	} else {
-		fprintf( stderr, "paxtest: return address contains a NULL byte.\n" );
+		fprintf( stderr, "paxtest: bad luck, try different "
+			"compiler options.\n" );
 		exit(1);
 	}
 }

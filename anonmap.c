@@ -29,7 +29,7 @@ void doit( void )
 	}
 
 	/* Put a RETN instruction in the buffer */
-	*buf = '\xc3';
+	*buf = buf_retn;
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;

@@ -21,7 +21,7 @@ void doit( void )
 	fptr func;
 
 	/* Put a RETN instruction in the buffer */
-	bufbss = '\xc3';
+	bufbss = buf_retn;
 
 	/* Try to make the memory region executable by using mprotect() */
 	/* Due to an OpenBSD bug PROT_READ is required */

@@ -13,7 +13,7 @@
 
 char *testname = "Executable data (mprotect)               ";
 
-char buf = '\xc3';	/* RETN instruction */
+char buf = buf_retn;	/* RETN instruction */
 
 void doit( void )
 {
