@@ -3,6 +3,6 @@
  * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
  */
 
-char *testname = "Stack randomisation test                 ";
-char *testprog = "./getstack";
+char *testname = "Stack randomisation test (PAGEEXEC)      ";
+char *testprog = "./getstack2";
 

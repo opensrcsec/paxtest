@@ -16,20 +16,34 @@ TESTS=	anonmap \
 	mprotstack \
 	randamap \
 	randheap \
-	randmain \
+	randmain1 \
+	randmain2 \
 	randshlib \
-	randstack \
+	randstack1 \
+	randstack2 \
 	rettofunc1 \
 	rettofunc2 \
 	shlibbss \
 	shlibdata \
 	writetext
 
-UTILS=	getamap \
+UTILS=	chpax \
+	getamap \
 	getheap \
-	getmain \
+	getmain1 \
+	getmain2 \
 	getshlib \
-	getstack
+	getstack1 \
+	getstack2
+
+CHPAX:=chpax-0.4
+
+CHPAXSRC:=$(CHPAX)/aout.c \
+	$(CHPAX)/chpax.c \
+	$(CHPAX)/elf32.c \
+	$(CHPAX)/elf64.c \
+	$(CHPAX)/flags.c \
+	$(CHPAX)/io.c
 
 SHLIBS=	shlibtest.so
 
@@ -39,9 +53,14 @@ runtests: $(TESTS) genruntests
 	sh genruntests $(TESTS)
 
 clean:
-	-rm -f *.o *.s *~ core $(SHLIBS) $(TESTS) $(UTILS) runtests mptest.log
+	-rm -f *.o $(CHPAX)/*.o *.s *~ core
+	-rm -f $(SHLIBS) $(TESTS) $(UTILS)
+	-rm -f runtests mptest.log a.out
 
 anonmap: body.o anonmap.o
+
+chpax: $(CHPAXSRC:.c=.o)
+	$(CC) $(LDFLAGS) -o $@ $+
 
 crt1S.o: crt1S.S
 
@@ -57,15 +76,26 @@ getheap: getheap.o
 
 getamap.o: getamap.c
 
-getmain.o: getmain.c
-	$(CC) $(CFLAGS) -fPIC -DPIC -c $<
+getmain1: getmain.o
+	$(CC) $(LDFLAGS) -o $@ $+
 
-getmain: crt1S.o interp.o getmain.o
+getmain2: crt1S.o interp.o getmain2.o
 	$(CC) -shared -o $@ $+
+
+getmain2.o: getmain.c
+	$(CC) $(CFLAGS) -fPIC -DPIC -o $@ -c $<
 
 getshlib: getshlib.o -ldl
 
-getstack: getstack.o
+getstack1: getstack.o
+	$(CC) $(LDFLAGS) -o $@ $+
+	./chpax -S $@
+
+getstack2: getstack1 chpax
+	rm -f $@
+	cp getstack1 $@
+	chmod +x $@
+	./chpax -P $@
 
 mprotanon: body.o mprotanon.o
 
@@ -85,11 +115,15 @@ randamap: randbody.o randamap.o
 
 randheap: randbody.o randheap.o
 
-randmain: randbody.o randmain.o
+randmain1: randbody.o randmain1.o
+
+randmain2: randbody.o randmain2.o
 
 randshlib: randbody.o randshlib.o
 
-randstack: randbody.o randstack.o
+randstack1: randbody.o randstack1.o
+
+randstack2: randbody.o randstack2.o
 
 rettofunc1: body.o rettofunc1.o
 

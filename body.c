@@ -9,6 +9,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <limits.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #ifndef PAGESIZE
 #define PAGESIZE	(4096)
@@ -19,13 +21,21 @@ extern char *testname;
 
 int main( int argc, char *argv[] )
 {
+	int status;
+
 	printf( "%s: ", testname );
 	fflush( stdout );
 
-	doit();
+	if( fork() == 0 ) {
+		doit();
+	} else {
+		wait( &status );
+		if( WIFEXITED(status) == 0 ) {
+			printf( "Killed\n" );
+			exit( 0 );
+		}
+	}
 
-	/* Probably never reached */
-	printf( "Failed\n" );
 	exit( 0 );
 }
 
