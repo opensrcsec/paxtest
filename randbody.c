@@ -1,6 +1,7 @@
 /* randbody.c - This part is shared by the randomisation tests
  *
- * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
+ * Copyright (c)2003 by Peter Busser <peter@adamantix.org>
+ * This file has been released under the GNU Public Licence version 2 or later
  */
 
 #include <stdio.h>

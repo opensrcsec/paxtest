@@ -1,6 +1,7 @@
 /* getshlib.c - Get the address of a function in a shared library and print it
  *
- * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
+ * Copyright (c)2003 by Peter Busser <peter@adamantix.org>
+ * This file has been released under the GNU Public Licence version 2 or later
  */
 
 #include <stdio.h>

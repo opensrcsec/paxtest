@@ -1,4 +1,11 @@
 #!/bin/sh
+#
+# Script to run all the PaX memory protection tests
+#
+# Copyright(c) 2003 by Peter Busser <peter@adamantix.org>
+# This file has been released under the GNU Public Licence version 2 or later.
+# See the file COPYING for details.
+#
 
 echo $RUNDIR
 if [ "${RUNDIR}" == "" ]
@@ -12,12 +19,18 @@ cat << __here__ > paxtest
 LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}:${RUNDIR}
 export LD_LIBRARY_PATH
 
-echo "It may take a while for the tests to complete"
+cat <<__end__ | tee paxtest.log
+PaXtest - Copyright(c) 2003 by Peter Busser <peter@adamantix.org>
+Released under the GNU Public Licence version 2 or later
+
+__end__
+
+echo 'It may take a while for the tests to complete'
 
 for i in $*
 do
 	${RUNDIR}/\$i
-done >paxtest.log 2>&1
+done >>paxtest.log 2>&1
 
 echo "Test results:"
 cat paxtest.log

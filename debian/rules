@@ -20,7 +20,6 @@ export RUNDIR
 BINDIR=/usr/bin
 export BINDIR
 
-
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -g
 endif
@@ -42,7 +41,7 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE)
+	$(MAKE) -f Makefile.Adamantix
 	#/usr/bin/docbook-to-man debian/paxtest.sgml > paxtest.1
 
 	touch build-stamp
@@ -53,7 +52,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) clean
+	-$(MAKE) -f Makefile.Adamantix clean
 
 	dh_clean
 
@@ -64,7 +63,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/paxtest.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/paxtest
+	$(MAKE) -f Makefile.Adamantix install DESTDIR=$(CURDIR)/debian/paxtest
 
 
 # Build architecture-independent files here.

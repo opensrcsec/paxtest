@@ -1,7 +1,8 @@
 /* mprotanon.c - Tests wether code can be executed in anonymous mappings
  *               after trying to use mprotect() to make it executable.
  *
- * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
+ * Copyright (c)2003 by Peter Busser <peter@adamantix.org>
+ * This file has been released under the GNU Public Licence version 2 or later
  */
 
 #include <stdio.h>
