@@ -28,7 +28,8 @@ void doit( void )
 	*buf = '\xc3';
 
 	/* Try to make the buffer executable by using mprotect() */
-	do_mprotect( buf, 1, PROT_EXEC );
+	/* Due to a FreeBSD bug PROT_READ is required */
+	do_mprotect( buf, 1, PROT_READ|PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;

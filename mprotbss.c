@@ -26,7 +26,8 @@ void doit( void )
 	func = (fptr)&buf;
 
 	/* Try to make the bss executable first by using mprotect */
-	do_mprotect( &buf, 1, PROT_EXEC );
+	/* Due to a FreeBSD bug PROT_READ is required */
+	do_mprotect( &buf, 1, PROT_READ|PROT_EXEC );
 
 	/* Call the code in the buffer */
 	func();
