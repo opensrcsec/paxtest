@@ -17,7 +17,7 @@ char *testname = "Executable anonymous mapping (mprotect)  ";
 void doit( void )
 {
 	char *buf;
-	void (*func)(void);
+	fptr func;
 
 	buf = mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 	if( buf == NULL ) {
@@ -29,10 +29,10 @@ void doit( void )
 	*buf = '\xc3';
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))buf;
+	func = (fptr)buf;
 
 	/* Try to make the anonymous mapping executable first by using mprotect */
-	do_mprotect( &buf, 1, PROT_EXEC );
+	do_mprotect( buf, 1, PROT_EXEC );
 
 	/* Call the code in the buffer */
 	func();

@@ -12,14 +12,14 @@
 
 char *testname = "Executable shared library data           ";
 
-extern char bufdata;
+extern char bufdata, bufdata2;
 
 void doit( void )
 {
-	void (*func)(void);
+	fptr func;
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))&bufdata;
+	func = &bufdata < &bufdata2 ? (fptr)&bufdata : (fptr)&bufdata2;
 
 	/* Call the code in the buffer */
 	func();

@@ -14,7 +14,7 @@ char *testname = "Executable heap                          ";
 void doit( void )
 {
 	char *buf;
-	void (*func)(void);
+	fptr func;
 
 	buf = malloc( 1 );
 	if( buf == NULL ) {
@@ -26,7 +26,7 @@ void doit( void )
 	*buf = '\xc3';
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))buf;
+	func = (fptr)buf;
 
 	/* Call the code in the buffer */
 	func();

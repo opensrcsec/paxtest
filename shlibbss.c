@@ -12,17 +12,18 @@
 
 char *testname = "Executable shared library bss            ";
 
-extern char bufbss;
+extern char bufbss, bufbss2;
 
 void doit( void )
 {
-	void (*func)(void);
+	fptr func;
 
 	/* Put a RETN instruction in the buffer */
 	bufbss = '\xc3';
+	bufbss2 = '\xc3';
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))&bufbss;
+	func = &bufbss < &bufbss2 ? (fptr)&bufbss : (fptr)&bufbss2;
 
 	/* Call the code in the buffer */
 	func();

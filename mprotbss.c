@@ -17,13 +17,13 @@ char buf;
 
 void doit( void )
 {
-	void (*func)(void);
+	fptr func;
 
 	/* Put a RETN instruction in the buffer */
 	buf = '\xc3';
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))&buf;
+	func = (fptr)&buf;
 
 	/* Try to make the bss executable first by using mprotect */
 	do_mprotect( &buf, 1, PROT_EXEC );

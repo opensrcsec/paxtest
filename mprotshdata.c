@@ -18,13 +18,13 @@ extern char bufdata;
 
 void doit( void )
 {
-	void (*func)(void);
+	fptr func;
 
 	/* Try to make the memory region executable by using mprotect() */
 	do_mprotect( &bufdata, 1, PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))&bufdata;
+	func = (fptr)&bufdata;
 
 	/* Call the code in the buffer */
 	func();

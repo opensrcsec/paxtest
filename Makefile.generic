@@ -37,7 +37,9 @@ TESTS=	anonmap \
 	randstack1 \
 	randstack2 \
 	rettofunc1 \
+	rettofunc1x \
 	rettofunc2 \
+	rettofunc2x \
 	shlibbss \
 	shlibdata \
 	writetext
@@ -60,7 +62,8 @@ CHPAXSRC:=$(CHPAX)/aout.c \
 	$(CHPAX)/flags.c \
 	$(CHPAX)/io.c
 
-SHLIBS=	shlibtest.so
+SHLIBS=	shlibtest.so \
+	shlibtest2.so
 
 all: chpax $(SHLIBS) $(TESTS) $(UTILS) paxtest
 
@@ -165,17 +168,31 @@ randstack2: randbody.o randstack2.o
 
 rettofunc1: body.o rettofunc1.o
 
+rettofunc1x: body.o rettofunc1x.o
+	$(CC) $(LDFLAGS) -o $@ $+
+	chpax -X $@
+
 rettofunc2: body.o rettofunc2.o
 
+rettofunc2x: body.o rettofunc2x.o
+	$(CC) $(LDFLAGS) -o $@ $+
+	chpax -X $@
+
 shlibtest.o: shlibtest.c
+	$(CC) $(CFLAGS) -fPIC -DPIC -c $< -o $@
+
+shlibtest2.o: shlibtest2.c
 	$(CC) $(CFLAGS) -fPIC -DPIC -c $< -o $@
 
 shlibtest.so: shlibtest.o
 	$(CC) $(SHLDFLAGS) -shared -o $@ $+
 
-shlibbss: body.o shlibbss.o shlibtest.so
+shlibtest2.so: shlibtest2.o
+	$(CC) $(SHLDFLAGS) -shared -o $@ $+
 
-shlibdata: body.o shlibdata.o shlibtest.so
+shlibbss: body.o shlibbss.o shlibtest.so shlibtest2.so
+
+shlibdata: body.o shlibdata.o shlibtest.so shlibtest2.so
 
 writetext: body.o writetext.o shlibtest.so
 

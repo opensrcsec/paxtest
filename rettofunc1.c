@@ -5,21 +5,22 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "body.h"
 
 char *testname = "Return to function (strcpy)              ";
 
-char overflow[] = "xxxxxxxxxxxxxxxxxxxx";
+fptr overflow[32] = {
+	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
+	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
+	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
+	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked
+};
 
 void doit( void )
 {
 	char buf[4];
 
-	/* Copy the address of sploitworked() function in the overflow array */
-	*((unsigned long *)(overflow + 8)) = (unsigned long)itworked;
-	*((unsigned long *)(overflow + 12)) = (unsigned long)itworked;
-	*((unsigned long *)(overflow + 16)) = (unsigned long)itworked;
-
-	strcpy( buf, overflow );
+	strcpy( buf, (const char *)overflow );
 }
 

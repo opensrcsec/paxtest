@@ -15,13 +15,13 @@ char buf;
 
 void doit( void )
 {
-	void (*func)(void);
+	fptr func;
 
 	/* Put a RETN instruction in the buffer */
 	buf = '\xc3';
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))&buf;
+	func = (fptr)&buf;
 
 	/* Call the code in the buffer */
 	func();

@@ -18,7 +18,7 @@ extern char bufbss;
 
 void doit( void )
 {
-	void (*func)(void);
+	fptr func;
 
 	/* Put a RETN instruction in the buffer */
 	bufbss = '\xc3';
@@ -27,7 +27,7 @@ void doit( void )
 	do_mprotect( &bufbss, 1, PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))&bufbss;
+	func = (fptr)&bufbss;
 
 	/* Call the code in the buffer */
 	func();

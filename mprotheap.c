@@ -16,7 +16,7 @@ char *testname = "Executable heap (mprotect)               ";
 void doit( void )
 {
 	char *buf;
-	void (*func)(void);
+	fptr func;
 
 	buf = malloc( 1 );
 	if( buf == NULL ) {
@@ -31,7 +31,7 @@ void doit( void )
 	do_mprotect( buf, 1, PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))buf;
+	func = (fptr)buf;
 
 	/* Call the code in the buffer */
 	func();

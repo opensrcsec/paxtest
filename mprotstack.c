@@ -16,13 +16,13 @@ char *testname = "Executable stack (mprotect)              ";
 void doit( void )
 {
 	char buf;
-	void (*func)(void);
+	fptr func;
 
 	/* Put a RETN instruction in the buffer */
 	buf = '\xc3';
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))&buf;
+	func = (fptr)&buf;
 
 	/* Try to make the stack executable first */
 	do_mprotect( &buf, 1, PROT_READ|PROT_WRITE|PROT_EXEC );
