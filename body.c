@@ -24,8 +24,3 @@ void itfailed( void )
 	exit( 2 );
 }
 
-unsigned long get_sp( void )
-{
-	__asm__( "movl %esp, %eax" );
-}
-

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+cat << __here__ > runtests
+#!/bin/sh
+
+for i in $*
+do
+	./\$i
+done
+
+__here__
+
+chmod 755 runtests
+
+exit 0
+
