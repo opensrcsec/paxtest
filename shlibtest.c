@@ -4,11 +4,9 @@
  * This file has been released under the GNU Public Licence version 2 or later
  */
 
-#include "retn.h"
-
 char bufbss;
 
-char bufdata = buf_retn;
+char bufdata = '\xc3';
 
 /* A function which does nothing, it only exists so it can be referenced */
 int shlibtest( void )

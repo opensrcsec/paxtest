@@ -15,10 +15,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <pthread.h>
-
-#ifndef PAGESIZE
-#define PAGESIZE	(4096)
-#endif /* PAGESIZE */
+#include <unistd.h>
 
 extern int doit( void );
 extern char *testname;
@@ -96,6 +93,7 @@ int do_mprotect( const void *addr, size_t len, int prot )
 {
 	void *ptr;
 	int retval;
+	long PAGESIZE = sysconf(_SC_PAGESIZE);
 
 	/* Allign to a multiple of PAGESIZE, assumed to be a power of two */
 	ptr = (char *)(((unsigned long) addr) & ~(PAGESIZE-1));

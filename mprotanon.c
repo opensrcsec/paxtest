@@ -30,7 +30,7 @@ void doit( void )
 	}
 
 	/* Put a RETN instruction in the buffer */
-	*buf = buf_retn;
+	*buf = '\xc3';
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;
@@ -54,7 +54,8 @@ void doit( void )
 	 * But then, it is of course easier to simply disable this mprotect()
 	 * call than to fix your kernel and userland.
 	 */
-	do_mprotect( buf, 1, PROT_EXEC );
+	/* Due to a FreeBSD bug PROT_READ is required */
+	do_mprotect( buf, 1, PROT_READ|PROT_EXEC );
 
 	/* Call the code in the buffer */
 	func();

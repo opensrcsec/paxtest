@@ -116,7 +116,7 @@ UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getstack1 getstack2
 SHLIBS=	shlibtest.so shlibtest2.so
 
 ifeq ($(CHPAXBIN),)
-CHPAXVER := 0.5
+CHPAXVER := 0.7
 CHPAX := chpax-$(CHPAXVER)
 CHPAXSRC := $(CHPAX)/aout.c $(CHPAX)/chpax.c $(CHPAX)/elf32.c $(CHPAX)/elf64.c $(CHPAX)/flags.c $(CHPAX)/io.c
 CHPAXBIN := ./chpax
@@ -129,6 +129,7 @@ endif
 DUMMY := $(shell echo '${CHPAXBIN} $$* 2>/dev/null ||:' >> paxbin; chmod +x paxbin)
 
 PAXBIN := ./paxbin
+DL := -ldl
 
 clean:
 	-rm -f *.o *.s *~ core
@@ -191,7 +192,7 @@ getheap2 getmain2: $(PAX_DEP) getheap2.o getmain2.o
 	$(CC) $(LDFLAGS) $(CC_PIE) -o $@ $(PAX_DEP) $@.o || (echo -e "#!/bin/sh\necho $@ pie not implemented" > $@; chmod +x $@)
 
 getshlib: getshlib.o
-	$(CC) $(LDFLAGS) -o $@ $< -ldl
+	$(CC) $(LDFLAGS) -o $@ $< $(DL)
 
 # ET_EXEC and usage of "m" is not confirmed (as in Gentoo patch)
 # Adamantix does not use it
@@ -233,5 +234,5 @@ shlib%.so: shlib%.o
 	$(CC) $(SHLDFLAGS) -shared -o $@ $<
 
 $(SHLIB_TESTS): body.o $(SHLIBS) shlibbss.o shlibdata.o
-	$(CC) $(LDFLAGS) $(PTHREAD) -o $@ body.o $@.o $(SHLIBS) -ldl
+	$(CC) $(LDFLAGS) $(PTHREAD) -o $@ body.o $@.o $(SHLIBS) $(DL)
 

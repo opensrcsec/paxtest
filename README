@@ -71,9 +71,13 @@ The tests:
 ---------
 There are two types of tests in paxtest. First there are tests which try
 different ways to write and then run exploit code. The more different exploits
-are stopped, the better the protection provided by the system.
+are stopped, the better the protection provided by the system. Note that the
+tests simulate what an exploit could (and would) do, not what an application
+does normally. This is especially important in the mprotect tests because
+some people claim that normal applicatons do not do this - indeed, but that
+is not what these tests are about, they simulate exploits, not applications.
 
-Second there are a number of tests that measure the randomisation of the
+Second, there is a number of tests that measure the randomisation of the
 system. Randomisation does not provide any security, but only makes it harder
 for the attacker to guess where to attack (it is in fact security through
 obscurity). It is like rearranging the furniture in a pitch dark room every
@@ -102,8 +106,7 @@ Executable stack (mprotect)
 	These tests do the same as the previous tests. But now the test also
 	tries to disable the memory protection in the kernel using mprotect().
 	It changes the protection status of memory. An attacker can use it to
-	try to switch off memory protection and then perform an overflow attack
-	as usual.
+	try to switch off memory protection and execute shellcode as usual.
 
 Executable shared library bss (mprotect)
 Executable shared library data (mprotect)
