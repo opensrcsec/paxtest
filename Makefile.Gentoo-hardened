@@ -1,19 +1,18 @@
 #!/usr/bin/make
 
-CC=gcc
-CFLAGS=-O2
-LDFLAGS=
+GCC_SPCS:=$(shell gcc -dumpspecs > dumpspecs)
+CC := gcc -specs=dumpspecs
+
+CFLAGS  := -O2
+LDFLAGS :=
 ifndef RUNDIR
-RUNDIR=.
+RUNDIR := /usr/lib/paxtest
 endif
 
 # The Hardened GCC compiler has stack protector on by default, this
 # could interfere with the results of this test.
 
-CFLAGS	+= -DRUNDIR=\"${RUNDIR}\" -fno-stack-protector
-CFLAGS	+= $(shell portageq has_version / sys-devel/hardened-gcc && \
-	echo -yet_exec -yno_propolice)
-
+CFLAGS	:= -DRUNDIR=\"${RUNDIR}\" -fno-stack-protector
 
 TESTS=	anonmap \
 	execbss \
@@ -60,7 +59,7 @@ all: $(SHLIBS) $(TESTS) $(UTILS) paxtest
 clean:
 	-rm -f *.o *.s *~ core
 	-rm -f $(SHLIBS) $(TESTS) $(UTILS)
-	-rm -f paxtest paxtest.log a.out
+	-rm -f paxtest paxtest.log a.out dumpspecs
 
 ifdef DESTDIR
 ifdef BINDIR
@@ -78,9 +77,9 @@ endif
 paxtest: $(TESTS) genpaxtest
 	sh genpaxtest $(TESTS)
 
-anonmap: body.o anonmap.o
-
 crt1S.o: crt1S.S
+
+anonmap: body.o anonmap.o
 
 execbss: body.o execbss.o
 
@@ -93,7 +92,7 @@ execstack: body.o execstack.o
 getheap1: getheap.o
 	$(CC) $(LDFLAGS) -o $@ $+
 
-getheap2: getheap.o
+getheap2: crt1S.o interp.o getheap.o
 	$(CC) -shared -o $@ $+
 
 getheap.o: getheap.c
@@ -105,7 +104,7 @@ getmain1: getmain.o
 	$(CC) $(LDFLAGS) -o $@ $+
 	chpax -X $@
 
-getmain2: getmain2.o
+getmain2: crt1S.o interp.o getmain2.o
 	$(CC) -shared -o $@ $+
 
 getmain2.o: getmain.c

@@ -22,5 +22,5 @@ generic:
 	make -f Makefile.generic
 
 clean:
-	make -f Makefile.Adamantix clean
+	make -f Makefile.generic clean
 

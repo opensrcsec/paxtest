@@ -64,7 +64,7 @@ all: chpax $(SHLIBS) $(TESTS) $(UTILS) paxtest
 clean:
 	-rm -f *.o $(CHPAX)/*.o *.s *~ core
 	-rm -f $(SHLIBS) $(TESTS) $(UTILS)
-	-rm -f paxtest chpax paxtest.log a.out
+	-rm -f paxtest chpax paxtest.log a.out dumpspecs
 
 ifdef DESTDIR
 ifdef BINDIR
