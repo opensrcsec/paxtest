@@ -13,14 +13,14 @@ char *testname = "Executable stack                         ";
 
 void doit( void )
 {
-	char buf;
+	char buf[8192];
 	fptr func;
 
 	/* Put a RETN instruction in the buffer */
-	buf = '\xc3';
+	buf[0] = '\xc3';
 
 	/* Convert the pointer to a function pointer */
-	func = (fptr)&buf;
+	func = (fptr)buf;
 
 	/* Call the code in the buffer */
 	func();

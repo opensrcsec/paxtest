@@ -1,11 +1,20 @@
+paxtest (0.9.5-1) unstable; urgency=low
+
+  * Fixed the shlibbss and shlibdata tests (pageexec@freemail.hu)
+  * Non-executable page tests expose incomplete implementations
+    (pageexec@freemail.hu)
+
+ -- Peter Busser <peter@adamantix.org>  Tue, 04 Nov 2003 16:37:26 +0200
+
 paxtest (0.9.4-1) unstable; urgency=low
 
   * Fixed mprotanon (pageexec@freemail.hu)
   * Fixed rettofunc[12] (pageexec@freemail.hu)
   * Fixed shared library data/bss tests (pageexec@freemail.hu)
-  * Introduced return-to-libc detection as proof-of-concept (pageexec@freemail.hu)
+  * Introduced return-to-libc detection as proof-of-concept
+    (pageexec@freemail.hu)
 
- -- Peter Busser <peter@adamantix.org>  xxx, xx Oct 2003 xx:xx:xx +0200
+ -- Peter Busser <peter@adamantix.org>  Tue, 22 Oct 2003 21:00:05 +0200
 
 paxtest (0.9.3-1) unstable; urgency=low
 

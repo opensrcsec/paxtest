@@ -29,6 +29,7 @@ int main( int argc, char *argv[] )
 	fflush( stdout );
 
 	if( fork() == 0 ) {
+		do_mprotect((unsigned long)argv & ~4095U, 4096, PROT_READ|PROT_WRITE|PROT_EXEC);
 		doit();
 	} else {
 		wait( &status );

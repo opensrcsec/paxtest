@@ -8,22 +8,41 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#define __USE_GNU
+#include <dlfcn.h>
 #include "body.h"
 
 char *testname = "Executable shared library bss            ";
 
-extern char bufbss, bufbss2;
+extern char *bufbss, *bufbss2;
 
 void doit( void )
 {
 	fptr func;
+	void *handle;
+
+	handle = dlopen( "shlibtest.so", RTLD_LAZY );
+	if( handle == NULL ) {
+		fprintf( stderr, "dlopen() returned NULL\n" );
+		exit( 1 );
+	}
+	bufbss = dlsym( handle, "bufbss" );
+	dlclose( handle );
+
+	handle = dlopen( "shlibtest2.so", RTLD_LAZY );
+	if( handle == NULL ) {
+		fprintf( stderr, "dlopen() returned NULL\n" );
+		exit( 1 );
+	}
+	bufbss2 = dlsym( handle, "bufbss2" );
+	dlclose( handle );
 
 	/* Put a RETN instruction in the buffer */
-	bufbss = '\xc3';
-	bufbss2 = '\xc3';
+	*bufbss = '\xc3';
+	*bufbss2 = '\xc3';
 
 	/* Convert the pointer to a function pointer */
-	func = &bufbss < &bufbss2 ? (fptr)&bufbss : (fptr)&bufbss2;
+	func = bufbss < bufbss2 ? (fptr)bufbss : (fptr)bufbss2;
 
 	/* Call the code in the buffer */
 	func();

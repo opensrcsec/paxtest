@@ -13,6 +13,11 @@ adamantix:
 redhat-taroon:
 	make -f Makefile.RedHat-taroon
 
+gentoo: generic
+
+gentoo-hardened:
+	make -f Makefile.Gentoo-hardened
+
 generic:
 	make -f Makefile.generic
 

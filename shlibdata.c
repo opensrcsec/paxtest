@@ -8,18 +8,37 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#define __USE_GNU
+#include <dlfcn.h>
 #include "body.h"
 
 char *testname = "Executable shared library data           ";
 
-extern char bufdata, bufdata2;
+extern char *bufdata, *bufdata2;
 
 void doit( void )
 {
 	fptr func;
+	void *handle;
+
+	handle = dlopen( "shlibtest.so", RTLD_LAZY );
+	if( handle == NULL ) {
+		fprintf( stderr, "dlopen() returned NULL\n" );
+		exit( 1 );
+	}
+	bufdata = dlsym( handle, "bufdata" );
+	dlclose( handle );
+
+	handle = dlopen( "shlibtest2.so", RTLD_LAZY );
+	if( handle == NULL ) {
+		fprintf( stderr, "dlopen() returned NULL\n" );
+		exit( 1 );
+	}
+	bufdata2 = dlsym( handle, "bufdata2" );
+	dlclose( handle );
 
 	/* Convert the pointer to a function pointer */
-	func = &bufdata < &bufdata2 ? (fptr)&bufdata : (fptr)&bufdata2;
+	func = bufdata < bufdata2 ? (fptr)bufdata : (fptr)bufdata2;
 
 	/* Call the code in the buffer */
 	func();

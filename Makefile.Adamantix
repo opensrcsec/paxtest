@@ -1,14 +1,8 @@
 #!/usr/bin/make
 
-ifndef CC
 CC=gcc
-endif
-ifndef CFLAGS
 CFLAGS=-O2
-endif
-ifndef LDFLAGS
 LDFLAGS=
-endif
 ifndef RUNDIR
 RUNDIR=.
 endif
@@ -192,9 +186,9 @@ shlibtest.so: shlibtest.o
 shlibtest2.so: shlibtest2.o
 	$(CC) $(SHLDFLAGS) -shared -o $@ $+
 
-shlibbss: body.o shlibbss.o shlibtest.so shlibtest2.so
+shlibbss: body.o shlibbss.o shlibtest.so shlibtest2.so -ldl
 
-shlibdata: body.o shlibdata.o shlibtest.so shlibtest2.so
+shlibdata: body.o shlibdata.o shlibtest.so shlibtest2.so -ldl
 
 writetext: body.o writetext.o shlibtest.so
 
