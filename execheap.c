@@ -1,4 +1,4 @@
-/* execbss.c - Tests wether code in the .bss segment can be executed
+/* execheap.c - Tests wether code in the heap can be executed
  *
  * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
  */
@@ -8,19 +8,24 @@
 #include <stdlib.h>
 #include "body.h"
 
-char *testname = "Executable bss                           ";
-
-char buf;
+char *testname = "Executable heap                          ";
 
 void doit( void )
 {
+	char *buf;
 	void (*func)(void);
 
+	buf = malloc( 1 );
+	if( buf == NULL ) {
+		fprintf( stderr, "Out of memory\n" );
+		exit( 1 );
+	}
+
 	/* Put a RETN instruction in the buffer */
-	buf = '\xc3';
+	*buf = '\xc3';
 
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))&buf;
+	func = (void (*)(void))buf;
 
 	/* Call the code in the buffer */
 	func();

@@ -1,9 +1,11 @@
+(+ = done, - = to be implemented)
+
     + .data section of the main executable is not executable
     + .bss section of the main executable is not executable
     + brk() managed heap after the main executable is not executable
-    - .data section of libraries is not executable
-    - .bss section of libraries is not executable
-    - anonymous file mappings are not executable
+    + .data section of libraries is not executable
+    + .bss section of libraries is not executable
+    + anonymous file mappings are not executable
     + stack is not executable
 
     - .text section of ET_DYN ELF file mappings can be made writable once
@@ -13,9 +15,9 @@
     + .data section of the main executable cannot be made executable
     + .bss section of the main executable cannot be made executable
     + brk() managed heap after the main executable cannot be made executable
-    - .data section of libraries cannot be made executable
-    - .bss section of libraries cannot be made executable
-    - anonymous file mappings cannot be made executable
+    + .data section of libraries cannot be made executable
+    + .bss section of libraries cannot be made executable
+    + anonymous file mappings cannot be made executable
     + stack cannot be made executable
 
     - gcc trampolines are (properly) emulated

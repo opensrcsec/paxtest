@@ -1,18 +1,25 @@
+/* anonmap.c - Test wether code can be executed in anonymous mappings 
+ *
+ * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/mman.h>
 #include "body.h"
 
-char *testname = "Executable heap (small)    ";
+char *testname = "Executable anonymous mapping (mprotect)  ";
 
 void doit( void )
 {
 	char *buf;
 	void (*func)(void);
 
-	buf = malloc( 1 );
+	buf = mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 	if( buf == NULL ) {
-		fprintf( stderr, "Out of memory\n" );
+		fprintf( stderr, "mmap() returned NULL\n" );
 		exit( 1 );
 	}
 

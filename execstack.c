@@ -1,9 +1,14 @@
+/* execstack.c - Tests wether code on the stack can be executed
+ *
+ * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "body.h"
 
-char *testname = "Executable stack           ";
+char *testname = "Executable stack                         ";
 
 void doit( void )
 {

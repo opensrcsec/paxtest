@@ -1,4 +1,5 @@
-/* execbss.c - Tests wether code in the .bss segment can be executed
+/* shlibdata.c - Tests wether code in the .data segment of a shared library can
+ *               be executed
  *
  * Copyright (c)2003 by Peter Busser <peter@trusteddebian.org>
  */
@@ -8,19 +9,16 @@
 #include <stdlib.h>
 #include "body.h"
 
-char *testname = "Executable bss                           ";
+char *testname = "Executable shared library data           ";
 
-char buf;
+extern char bufdata;
 
 void doit( void )
 {
 	void (*func)(void);
 
-	/* Put a RETN instruction in the buffer */
-	buf = '\xc3';
-
 	/* Convert the pointer to a function pointer */
-	func = (void (*)(void))&buf;
+	func = (void (*)(void))&bufdata;
 
 	/* Call the code in the buffer */
 	func();
