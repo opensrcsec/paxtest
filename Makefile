@@ -9,6 +9,10 @@ endif
 ifndef LDFLAGS
 LDFLAGS=
 endif
+ifndef RUNDIR
+RUNDIR=.
+endif
+
 CFLAGS+=-DRUNDIR=\"${RUNDIR}\"
 
 
@@ -25,7 +29,8 @@ TESTS=	anonmap \
 	mprotshdata \
 	mprotstack \
 	randamap \
-	randheap \
+	randheap1 \
+	randheap2 \
 	randmain1 \
 	randmain2 \
 	randshlib \
@@ -38,7 +43,8 @@ TESTS=	anonmap \
 	writetext
 
 UTILS=	getamap \
-	getheap \
+	getheap1 \
+	getheap2 \
 	getmain1 \
 	getmain2 \
 	getshlib \
@@ -94,7 +100,14 @@ execheap: body.o execheap.o
 
 execstack: body.o execstack.o
 
-getheap: getheap.o
+getheap1: getheap.o
+	$(CC) $(LDFLAGS) -o $@ $+
+
+getheap2: crt1S.o interp.o getheap.o
+	$(CC) -shared -o $@ $+
+
+getheap.o: getheap.c
+	$(CC) $(CFLAGS) -fPIC -DPIC -o $@ -c $<
 
 getamap.o: getamap.c
 
@@ -136,7 +149,9 @@ mprotstack: body.o mprotstack.o
 
 randamap: randbody.o randamap.o
 
-randheap: randbody.o randheap.o
+randheap1: randbody.o randheap1.o
+
+randheap2: randbody.o randheap2.o
 
 randmain1: randbody.o randmain1.o
 
