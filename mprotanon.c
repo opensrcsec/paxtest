@@ -24,7 +24,7 @@ void doit( void )
 	fptr func;
 
 	buf = mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-	if( buf == NULL ) {
+	if( buf == MAP_FAILED ) {
 		fprintf( stderr, "mmap() returned NULL\n" );
 		exit( 1 );
 	}

@@ -17,7 +17,7 @@ generic:
 	make -f Makefile.generic
 
 openbsd:
-	make -f Makefile.OpenBSD
+	gmake -f Makefile.OpenBSD
 
 clean:
 	make -f Makefile.Adamantix clean

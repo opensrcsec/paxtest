@@ -1,7 +1,6 @@
 #!/usr/bin/make
 
-GCC_SPCS:=$(shell gcc -dumpspecs > dumpspecs)
-CC := gcc -specs=dumpspecs
+CC := gcc
 CC_PIE := -shared
 CC_PIC := -fPIC -DPIC
 PAX_DEP := crt1S.o interp.o

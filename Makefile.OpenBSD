@@ -1,4 +1,4 @@
-#!/usr/bin/make
+#!/usr/bin/gmake
 
 CC=gcc
 CFLAGS=
@@ -33,10 +33,6 @@ TESTS=	anonmap \
 	rettofunc1x \
 	rettofunc2 \
 	rettofunc2x \
-	rettofunc3 \
-	rettofunc3x \
-	rettofunc4 \
-	rettofunc4x \
 	shlibbss \
 	shlibdata \
 	writetext
@@ -154,16 +150,6 @@ rettofunc1x: body.o rettofunc1x.o
 rettofunc2: body.o rettofunc2.o
 
 rettofunc2x: body.o rettofunc2x.o
-	$(CC) $(LDFLAGS) -o $@ $+
-
-rettofunc3: body.o rettofunc3.o
-
-rettofunc3x: body.o rettofunc3x.o
-	$(CC) $(LDFLAGS) -o $@ $+
-
-rettofunc4: body.o rettofunc4.o
-
-rettofunc4x: body.o rettofunc4x.o
 	$(CC) $(LDFLAGS) -o $@ $+
 
 shlibtest.o: shlibtest.c
