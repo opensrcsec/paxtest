@@ -235,4 +235,3 @@ shlib%.so: shlib%.o
 
 $(SHLIB_TESTS): body.o $(SHLIBS) shlibbss.o shlibdata.o
 	$(CC) $(LDFLAGS) $(PTHREAD) -o $@ body.o $@.o $(SHLIBS) $(DL)
-

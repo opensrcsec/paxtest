@@ -11,7 +11,7 @@
 #include <sys/mman.h>
 #include "body.h"
 
-char *testname = "Executable data (mprotect)               ";
+const char testname[] = "Executable data (mprotect)               ";
 
 char buf = '\xc3';	/* RETN instruction */
 
@@ -34,4 +34,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

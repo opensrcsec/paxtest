@@ -12,30 +12,29 @@
 #include <sys/mman.h>
 #include "body.h"
 
-char *testname = "Executable shared library bss (mprotect) ";
+const char testname[] = "Executable shared library bss (mprotect) ";
 
-extern char bufbss;
+extern char shbss;
 
 void doit( void )
 {
 	fptr func;
 
 	/* Put a RETN instruction in the buffer */
-	bufbss = '\xc3';
+	shbss = '\xc3';
 
 	/* Try to make the memory region executable by using mprotect() */
 	/* Due to an OpenBSD bug PROT_READ is required */
-	do_mprotect( &bufbss, 1, PROT_READ|PROT_EXEC );
+	do_mprotect( &shbss, 1, PROT_READ|PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
-	func = (fptr)&bufbss;
+	func = (fptr)&shbss;
 
 	/* Call the code in the buffer */
 	func();
 
-	do_mprotect( &bufbss, 1, PROT_READ|PROT_WRITE );
+	do_mprotect( &shbss, 1, PROT_READ|PROT_WRITE );
 
 	/* It worked when the function returns */
 	itworked();
 }
-

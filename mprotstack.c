@@ -11,7 +11,7 @@
 #include <sys/mman.h>
 #include "body.h"
 
-char *testname = "Executable stack (mprotect)              ";
+const char testname[] = "Executable stack (mprotect)              ";
 
 void doit( void )
 {
@@ -33,4 +33,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

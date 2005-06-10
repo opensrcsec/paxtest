@@ -11,7 +11,7 @@
 #include <sys/mman.h>
 #include "body.h"
 
-char *testname = "Executable heap (mprotect)               ";
+const char testname[] = "Executable heap (mprotect)               ";
 
 void doit( void )
 {
@@ -42,4 +42,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

@@ -11,7 +11,7 @@
 #include <sys/mman.h>
 #include "body.h"
 
-char *testname = "Executable bss (mprotect)                ";
+const char testname[] = "Executable bss (mprotect)                ";
 
 char buf;
 
@@ -37,4 +37,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

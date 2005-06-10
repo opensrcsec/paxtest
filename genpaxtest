@@ -35,7 +35,7 @@ fi
 
 export PAXTEST_MODE
 
-if [ "${LD_LIBRARY_PATH}" = "" ]
+if [ "\${LD_LIBRARY_PATH}" = "" ]
 then
 	LD_LIBRARY_PATH=${RUNDIR}
 else

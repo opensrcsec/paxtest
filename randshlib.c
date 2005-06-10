@@ -8,6 +8,5 @@
 #error RUNDIR not defined
 #endif
 
-char *testname = "Shared library randomisation test        ";
-char *testprog = RUNDIR"/getshlib";
-
+const char testname[] = "Shared library randomisation test        ";
+const char testprog[] = RUNDIR"/getshlib";

@@ -18,7 +18,7 @@
 #include <unistd.h>
 
 extern int doit( void );
-extern char *testname;
+extern const char testname[];
 
 static void *test_thread(void *p)
 {

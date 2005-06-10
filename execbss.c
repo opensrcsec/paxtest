@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "body.h"
 
-char *testname = "Executable bss                           ";
+const char testname[] = "Executable bss                           ";
 
 char buf;
 
@@ -29,4 +29,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "body.h"
 
-char *testname = "Executable data                          ";
+const char testname[] = "Executable data                          ";
 
 char buf = '\xc3';	/* RETN instruction */
 
@@ -26,4 +26,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

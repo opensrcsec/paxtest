@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "body.h"
 
-char *testname = "Executable stack                         ";
+const char testname[] = "Executable stack                         ";
 
 void doit( void )
 {
@@ -28,4 +28,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

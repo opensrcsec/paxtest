@@ -1,5 +1,6 @@
 paxtest (0.9.7-1) stable; urgency=low
-  * Fixed some tests on OpenBSD and FreeBSD (thanks to paxtest@hunger.hu)
+  * Fixed some tests on OpenBSD and FreeBSD (thanks to paxtest@hunger.hu
+    and mux@freebsd.org)
   * Fixed return address acquisition, still gcc specific
   * Switched to paxctl on gentoo
   * Fixed setting up LD_LIBRARY_PATH in genpaxtest (Peter S. Mazinger)

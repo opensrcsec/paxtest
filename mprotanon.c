@@ -16,7 +16,7 @@
 #define MAP_ANONYMOUS MAP_ANON
 #endif
 
-char *testname = "Executable anonymous mapping (mprotect)  ";
+const char testname[] = "Executable anonymous mapping (mprotect)  ";
 
 void doit( void )
 {
@@ -63,4 +63,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

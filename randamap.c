@@ -8,6 +8,5 @@
 #error RUNDIR not defined
 #endif
 
-char *testname = "Anonymous mapping randomisation test     ";
-char *testprog = RUNDIR"/getamap";
-
+const char testname[] = "Anonymous mapping randomisation test     ";
+const char testprog[] = RUNDIR"/getamap";

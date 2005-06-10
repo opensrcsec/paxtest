@@ -8,7 +8,7 @@
 #include <string.h>
 #include "body.h"
 
-char *testname = "Return to function (strcpy)              ";
+const char testname[] = "Return to function (strcpy)              ";
 
 fptr overflow[32] = {
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
@@ -28,4 +28,3 @@ void doit( void )
 		exit(1);
 	}
 }
-

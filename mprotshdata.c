@@ -12,9 +12,9 @@
 #include <sys/mman.h>
 #include "body.h"
 
-char *testname = "Executable shared library data (mprotect)";
+const char testname[] = "Executable shared library data (mprotect)";
 
-extern char bufdata;
+extern char shdata;
 
 void doit( void )
 {
@@ -22,17 +22,16 @@ void doit( void )
 
 	/* Try to make the memory region executable by using mprotect() */
 	/* Due to an OpenBSD bug PROT_READ is required */
-	do_mprotect( &bufdata, 1, PROT_READ|PROT_EXEC );
+	do_mprotect( &shdata, 1, PROT_READ|PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
-	func = (fptr)&bufdata;
+	func = (fptr)&shdata;
 
 	/* Call the code in the buffer */
 	func();
 
-	do_mprotect( &bufdata, 1, PROT_READ|PROT_WRITE );
+	do_mprotect( &shdata, 1, PROT_READ|PROT_WRITE );
 
 	/* It worked when the function returns */
 	itworked();
 }
-

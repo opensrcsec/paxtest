@@ -12,9 +12,9 @@
 #include <dlfcn.h>
 #include "body.h"
 
-char *testname = "Executable shared library bss            ";
+const char testname[] = "Executable shared library bss            ";
 
-extern char *bufbss, *bufbss2;
+static char *shbss, *shbss2;
 
 void doit( void )
 {
@@ -26,7 +26,7 @@ void doit( void )
 		fprintf( stderr, "dlopen() returned NULL\n" );
 		exit( 1 );
 	}
-	bufbss = dlsym( handle, "bufbss" );
+	shbss = dlsym( handle, "shbss" );
 	dlclose( handle );
 
 	handle = dlopen( "shlibtest2.so", RTLD_LAZY );
@@ -34,15 +34,15 @@ void doit( void )
 		fprintf( stderr, "dlopen() returned NULL\n" );
 		exit( 1 );
 	}
-	bufbss2 = dlsym( handle, "bufbss2" );
+	shbss2 = dlsym( handle, "shbss2" );
 	dlclose( handle );
 
 	/* Put a RETN instruction in the buffer */
-	*bufbss = '\xc3';
-	*bufbss2 = '\xc3';
+	*shbss = '\xc3';
+	*shbss2 = '\xc3';
 
 	/* Convert the pointer to a function pointer */
-	func = bufbss < bufbss2 ? (fptr)bufbss : (fptr)bufbss2;
+	func = shbss < shbss2 ? (fptr)shbss : (fptr)shbss2;
 
 	/* Call the code in the buffer */
 	func();
@@ -50,4 +50,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

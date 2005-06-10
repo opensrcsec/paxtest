@@ -11,7 +11,7 @@
 #include <sys/mman.h>
 #include "body.h"
 
-char *testname = "Executable anonymous mapping             ";
+const char testname[] = "Executable anonymous mapping             ";
 
 #ifndef MAP_ANONYMOUS
 #define MAP_ANONYMOUS MAP_ANON
@@ -40,4 +40,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

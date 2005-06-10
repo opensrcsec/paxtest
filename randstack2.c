@@ -8,6 +8,5 @@
 #error RUNDIR not defined
 #endif
 
-char *testname = "Stack randomisation test (PAGEEXEC)      ";
-char *testprog = RUNDIR"/getstack2";
-
+const char testname[] = "Stack randomisation test (PAGEEXEC)      ";
+const char testprog[] = RUNDIR"/getstack2";

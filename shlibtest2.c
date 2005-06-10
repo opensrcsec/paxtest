@@ -4,9 +4,9 @@
  * This file has been released under the GNU Public Licence version 2 or later
  */
 
-char bufbss2;
+char shbss2;
 
-char bufdata2 = '\xc3';
+char shdata2 = '\xc3';
 
 /* A function which does nothing, it only exists so it can be referenced */
 int shlibtest2( void )

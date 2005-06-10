@@ -12,7 +12,7 @@
 #include <sys/mman.h>
 #include "body.h"
 
-char *testname = "Writable text segments                   ";
+const char testname[] = "Writable text segments                   ";
 
 extern int shlibtest( void );
 
@@ -53,4 +53,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

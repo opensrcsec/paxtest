@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "body.h"
 
-char *testname = "Executable heap                          ";
+const char testname[] = "Executable heap                          ";
 
 void doit( void )
 {
@@ -34,4 +34,3 @@ void doit( void )
 	/* It worked when the function returns */
 	itworked();
 }
-

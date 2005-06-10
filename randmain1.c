@@ -8,6 +8,5 @@
 #error RUNDIR not defined
 #endif
 
-char *testname = "Main executable randomisation (ET_EXEC)  ";
-char *testprog = RUNDIR"/getmain1";
-
+const char testname[] = "Main executable randomisation (ET_EXEC)  ";
+const char testprog[] = RUNDIR"/getmain1";

@@ -8,6 +8,5 @@
 #error RUNDIR not defined
 #endif
 
-char *testname = "Heap randomisation test (ET_DYN)         ";
-char *testprog = RUNDIR"/getheap2";
-
+const char testname[] = "Heap randomisation test (ET_DYN)         ";
+const char testprog[] = RUNDIR"/getheap2";
