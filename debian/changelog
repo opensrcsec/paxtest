@@ -5,6 +5,8 @@ paxtest (0.9.7-1) stable; urgency=low
   * Switched to paxctl on gentoo
   * Fixed setting up LD_LIBRARY_PATH in genpaxtest (Peter S. Mazinger)
   * Added uClibc support (Peter S. Mazinger)
+  * Fixed the executable shared library data/bss tests (thanks to
+    paxtest@hunger.hu)
 
 paxtest (0.9.6-1) stable; urgency=low
 

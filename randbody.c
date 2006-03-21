@@ -8,8 +8,8 @@
 
 #define COUNT	(25)
 
-const char testname[];
-const char testprog[];
+extern const char testname[];
+extern const char testprog[];
 
 int main( int argc, char *argv[] )
 {

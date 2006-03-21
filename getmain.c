@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void foo(void)
+void foo(void)
 {
 	printf( "%p\n", __builtin_return_address(0) );
 }
@@ -15,4 +15,5 @@ static void foo(void)
 int main( int argc, char *argv[] )
 {
 	foo();
+	exit(0);
 }

@@ -19,23 +19,31 @@ static char *shdata, *shdata2;
 void doit( void )
 {
 	fptr func;
-	void *handle;
+	void *handle1, *handle2;
 
-	handle = dlopen( "shlibtest.so", RTLD_LAZY );
-	if( handle == NULL ) {
+	handle1 = dlopen( "shlibtest.so", RTLD_LAZY );
+	if( handle1 == NULL ) {
 		fprintf( stderr, "dlopen() returned NULL\n" );
 		exit( 1 );
 	}
-	shdata = dlsym( handle, "shdata" );
-	dlclose( handle );
+	dlerror(); /* clear any errors */
+	shdata = dlsym( handle1, "shdata" );
+	if( dlerror() != NULL ) {
+		fprintf( stderr, "symbol %s not found in %s\n", "shdata", "shlibtest.so" );
+		exit( 1 );
+	}
 
-	handle = dlopen( "shlibtest2.so", RTLD_LAZY );
-	if( handle == NULL ) {
+	handle2 = dlopen( "shlibtest2.so", RTLD_LAZY );
+	if( handle2 == NULL ) {
 		fprintf( stderr, "dlopen() returned NULL\n" );
 		exit( 1 );
 	}
-	shdata2 = dlsym( handle, "shdata" );
-	dlclose( handle );
+	dlerror(); /* clear any errors */
+	shdata2 = dlsym( handle2, "shdata2" );
+	if( dlerror() != NULL ) {
+		fprintf( stderr, "symbol %s not found in %s\n", "shdata2", "shlibtest2.so" );
+		exit( 1 );
+	}
 
 	/* Convert the pointer to a function pointer */
 	func = shdata < shdata2 ? (fptr)shdata : (fptr)shdata2;
@@ -45,4 +53,7 @@ void doit( void )
 
 	/* It worked when the function returns */
 	itworked();
+
+	dlclose( handle1 );
+	dlclose( handle2 );
 }

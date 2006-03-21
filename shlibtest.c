@@ -4,9 +4,9 @@
  * This file has been released under the GNU Public Licence version 2 or later
  */
 
-char shbss;
+char shbss[4096];
 
-char shdata = '\xc3';
+char shdata[4096] = {'\xc3'};
 
 /* A function which does nothing, it only exists so it can be referenced */
 int shlibtest( void )
