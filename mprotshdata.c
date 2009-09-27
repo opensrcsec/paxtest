@@ -1,4 +1,4 @@
-/* mprotshdata.c - Tests wether code in the .data segment of a shared library
+/* mprotshdata.c - Tests whether code in the .data segment of a shared library
  *                 can be executed after trying to use mprotect() to make it
  *                 executable.
  *

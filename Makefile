@@ -7,18 +7,12 @@
 all:
 	@cat targets
 
-adamantix:
-	make -f Makefile.Adamantix
-
-gentoo:
-	make -f Makefile.Gentoo
-
-generic:
-	make -f Makefile.generic
+linux:
+	make -f Makefile.psm
 
 openbsd:
 	gmake -f Makefile.OpenBSD
 
 clean:
-	make -f Makefile.Adamantix clean
+	make -f Makefile.psm clean
 

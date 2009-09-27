@@ -1,4 +1,4 @@
-/* mprotshbss.c - Tests wether code in the .bss segment of a shared library can
+/* mprotshbss.c - Tests whether code in the .bss segment of a shared library can
  *                be executed after trying to use mprotect() to make it
  *                executable.
  *

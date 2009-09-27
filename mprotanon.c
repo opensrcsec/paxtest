@@ -1,4 +1,4 @@
-/* mprotanon.c - Tests wether code can be executed in anonymous mappings
+/* mprotanon.c - Tests whether code can be executed in anonymous mappings
  *               after trying to use mprotect() to make it executable.
  *
  * Copyright (c)2003,2004 by Peter Busser <peter@adamantix.org>

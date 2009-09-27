@@ -1,9 +1,7 @@
 Choose one of the following make targets:
 
-adamantix	Adamantix
-gentoo		Gentoo
+linux		Linux
 openbsd		OpenBSD
-generic		For other Linux distributions
 
 clean		Clean up
 

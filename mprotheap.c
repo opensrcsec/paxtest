@@ -1,4 +1,4 @@
-/* mprotheap.c - Tests wether code on the heap can be executed after trying to
+/* mprotheap.c - Tests whether code on the heap can be executed after trying to
  *               use mprotect() to make it executable.
  *
  * Copyright (c)2003 by Peter Busser <peter@adamantix.org>

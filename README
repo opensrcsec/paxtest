@@ -30,9 +30,8 @@ Compiling paxtest:
 Compiling paxtest should be quite straightforward. First unpack paxtest. Then
 cd into the directory. And then run one of the following:
 
-make adamantix		(to create Adamantix binaries)
-make gentoo		(to create Gentoo binaries)
-make generic		(to create binaries for other Linux distributions)
+make linux		(to create Linux binaries)
+make openbsd		(to create OpenBSD binaries)
 
 (Type make to get the above list.)
 

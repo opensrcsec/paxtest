@@ -28,7 +28,7 @@ int main( int argc, char *argv[] )
 		sprintf = dlsym( handle, "sprintf" );
 
 		if( dlerror() == NULL ) {
-			printf( "%0p\n", sprintf );
+			printf( "%p\n", sprintf );
 		}
 
 		dlclose( handle );

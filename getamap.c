@@ -24,7 +24,7 @@ int main( int argc, char *argv[] )
 		exit( 1 );
 	}
 
-	printf( "%0p\n", buf );
+	printf( "%p\n", buf );
 
 	exit( 0 );
 }

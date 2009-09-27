@@ -18,7 +18,7 @@ int main( int argc, char *argv[] )
 		exit( 1 );
 	}
 
-	printf( "%0p\n", p );
+	printf( "%p\n", p );
 
 	exit( 0 );
 }

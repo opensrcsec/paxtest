@@ -1,4 +1,4 @@
-/* mprotbss.c - Tests wether code in the .bss segment can be executed after
+/* mprotbss.c - Tests whether code in the .bss segment can be executed after
  *              trying to use mprotect() to make it executable
  *
  * Copyright (c)2003 by Peter Busser <peter@adamantix.org>

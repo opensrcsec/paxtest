@@ -1,4 +1,4 @@
-/* mprotstack.c - Tests wether code on the stack can be executed after trying
+/* mprotstack.c - Tests whether code on the stack can be executed after trying
  *                to make it executable by using mprotect().
  *
  * Copyright (c)2003 by Peter Busser <peter@adamantix.org>

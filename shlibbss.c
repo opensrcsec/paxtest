@@ -1,4 +1,4 @@
-/* shlibbss.c - Tests wether code in the .bss segment of a shared library can
+/* shlibbss.c - Tests whether code in the .bss segment of a shared library can
  *              be executed
  *
  * Copyright (c)2003 by Peter Busser <peter@adamantix.org>

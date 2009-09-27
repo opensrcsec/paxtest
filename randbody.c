@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define COUNT	(25)
 
@@ -19,6 +20,7 @@ int main( int argc, char *argv[] )
 	unsigned long and;
 	unsigned long or;
 	int bits;
+	int ret;
 
 	printf( "%s: ", testname );
 
@@ -31,8 +33,11 @@ int main( int argc, char *argv[] )
 			exit( 1 );
 		}
 
-		fscanf( fp, "%lx", &tmp );
-
+		ret = fscanf( fp, "%lx", &tmp );
+		if (ret != 1) {
+			perror ( testprog );
+			exit( 1 );
+		}
 		and &= tmp;
 		or |= tmp;
 

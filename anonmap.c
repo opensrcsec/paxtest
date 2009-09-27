@@ -1,4 +1,4 @@
-/* anonmap.c - Tests wether code can be executed in anonymous mappings
+/* anonmap.c - Tests whether code can be executed in anonymous mappings
  *
  * Copyright (c)2003 by Peter Busser <peter@adamantix.org>
  * This file has been released under the GNU Public Licence version 2 or later

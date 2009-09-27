@@ -1,4 +1,4 @@
-/* execheap.c - Tests wether code in the heap can be executed
+/* execheap.c - Tests whether code in the heap can be executed
  *
  * Copyright (c)2003 by Peter Busser <peter@adamantix.org>
  * This file has been released under the GNU Public Licence version 2 or later
