@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "body.h"
+#include "shellcode.h"
 
 const char testname[] = "Executable stack                         ";
 
@@ -16,8 +17,7 @@ void doit( void )
 	char buf[8192];
 	fptr func;
 
-	/* Put a RETN instruction in the buffer */
-	buf[0] = '\xc3';
+	copy_shellcode(buf, SHELLCODE_RETURN);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;

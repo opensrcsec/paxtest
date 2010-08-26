@@ -1,3 +1,17 @@
+paxtest (0.9.9--3) stable; urgency=low
+  * fixed Makefile to use -nopie for Gentoo Hardened on ET_EXEC tests
+
+paxtest (0.9.9-2) stable; urgency=low
+  * fixed writable text segments test under gcc 4.5 optimizations
+
+paxtest (0.9.9-1) stable; urgency=low
+  * added SPARC/64 support
+  * added PPC/64 support (return to function tests should be ignored for PPC64)
+  * added 32/64bit target support
+  * added shellode.h to easily support additional architectures
+  * made paxctl generate the PT_PAX_FLAGS header for binaries that
+    didn't have one
+
 paxtest (0.9.7-1) stable; urgency=low
   * Fixed some tests on OpenBSD and FreeBSD (thanks to paxtest@hunger.hu
     and mux@freebsd.org)

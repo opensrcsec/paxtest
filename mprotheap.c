@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 #include "body.h"
+#include "shellcode.h"
 
 const char testname[] = "Executable heap (mprotect)               ";
 
@@ -18,18 +19,17 @@ void doit( void )
 	char *buf;
 	fptr func;
 
-	buf = malloc( 1 );
+	buf = malloc( MAX_SHELLCODE_LEN );
 	if( buf == NULL ) {
 		fprintf( stderr, "Out of memory\n" );
 		exit( 1 );
 	}
 
-	/* Put a RETN instruction in the buffer */
-	*buf = '\xc3';
+	copy_shellcode(buf, SHELLCODE_RETURN);
 
 	/* Try to make the buffer executable by using mprotect() */
 	/* Due to a FreeBSD bug PROT_READ is required */
-	do_mprotect( buf, 1, PROT_READ|PROT_EXEC );
+	do_mprotect( buf, SIZE_OF_SHELLCODE_RETURN, PROT_READ|PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;
@@ -37,7 +37,7 @@ void doit( void )
 	/* Call the code in the buffer */
 	func();
 
-	do_mprotect( buf, 1, PROT_READ|PROT_WRITE );
+	do_mprotect( buf, MAX_SHELLCODE_LEN, PROT_READ|PROT_WRITE );
 
 	/* It worked when the function returns */
 	itworked();

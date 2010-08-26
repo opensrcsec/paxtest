@@ -10,26 +10,29 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 #include "body.h"
+#include "shellcode.h"
 
 const char testname[] = "Executable data (mprotect)               ";
 
-char buf = '\xc3';	/* RETN instruction */
+char buf[MAX_SHELLCODE_LEN] = SHELLCODE_RETURN_ARRAY;
 
 void doit( void )
 {
 	fptr func;
+
+	copy_shellcode(buf, SHELLCODE_RETURN);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)&buf;
 
 	/* Try to make the data executable first by using mprotect */
 	/* Due to an OpenBSD bug PROT_READ is required */
-	do_mprotect( &buf, 1, PROT_READ|PROT_EXEC );
+	do_mprotect( &buf, sizeof(buf), PROT_READ|PROT_EXEC );
 
 	/* Call the code in the buffer */
 	func();
 
-	do_mprotect( &buf, 1, PROT_READ|PROT_WRITE );
+	do_mprotect( &buf, sizeof(buf), PROT_READ|PROT_WRITE );
 
 	/* It worked when the function returns */
 	itworked();

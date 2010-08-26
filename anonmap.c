@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include "body.h"
+#include "shellcode.h"
 
 const char testname[] = "Executable anonymous mapping             ";
 
@@ -28,8 +29,7 @@ void doit( void )
 		exit( 1 );
 	}
 
-	/* Put a RETN instruction in the buffer */
-	*buf = '\xc3';
+	copy_shellcode(buf, SHELLCODE_RETURN);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;

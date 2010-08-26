@@ -9,7 +9,6 @@
 CC := gcc
 LD := ld
 CC_PIC := -fPIC
-GCC_SPCS := $(shell $(CC) -print-file-name=${GCC_SPECS:-specs})
 
 check_gcc = $(shell if $(CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; \
 	then echo "$(1)"; else echo "$(2)"; fi)
@@ -27,23 +26,17 @@ CC_PIE := $(call check_gcc,-fPIE,-fPIC)
 
 CC_TRAMPOLINES := $(call check_gcc,-ftrampolines,)
 
-SCRT_FILE = $(shell if test -r /usr/lib/Scrt1.o ; then echo "/usr/lib/Scrt1.o"; fi)
+CC_MSECURE_PLT := $(call check_gcc,-msecure-plt,)
 
-ifneq ($(SCRT_FILE),)
 LD_PIE = $(shell $(LD) --help | grep -q pie && echo "-pie")
 ifneq ($(LD_PIE),)
 # Gentoo (hardened specs enabled)
-CC_ETEXEC = $(shell grep -q "\!nopie" $(GCC_SPCS) && echo "-nopie")
+CC_ETEXEC = $(shell $(CC) -dumpspecs | grep -q "\!nopie" && echo "-nopie")
 LD_ETEXEC = $(CC_ETEXEC)
-endif
-else
-# generic, local version
-SCRT_FILE = crt1S.o
 endif
 
 ifeq ($(LD_PIE),)
 LD_PIE = -shared
-PAX_DEP = $(SCRT_FILE) interp.o
 endif
 
 # check for installed binaries
@@ -73,15 +66,21 @@ endif
 
 CFLAGS	:= $(OPT_FLAGS) -D_FORTIFY_SOURCE=0 -DRUNDIR=\"${RUNDIR}\" $(CC_SSP) $(CC_TRAMPOLINES)
 
+ifneq ($(THEARCH),)
+CFLAGS += $(THEARCH)
+LDFLAGS += $(THEARCH)
+SHLDFLAGS += $(THEARCH)
+endif
+
 EXEC_TESTS = anonmap execbss execdata execheap execstack
 MPROT_TESTS = mprotanon mprotbss mprotdata mprotheap mprotstack
+SHLIB_TESTS = shlibbss shlibdata
 MPROTSH_TESTS = mprotshbss mprotshdata writetext
 RAND_TESTS = randamap randheap1 randheap2 randmain1 randmain2 randshlib randstack1 randstack2
 RET_TESTS = rettofunc1 rettofunc2
 RETX_TESTS = rettofunc1x rettofunc2x
-SHLIB_TESTS = shlibbss shlibdata
 
-TESTS = $(EXEC_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS) $(RAND_TESTS) $(RET_TESTS) $(RETX_TESTS) $(SHLIB_TESTS)
+TESTS = $(EXEC_TESTS) $(SHLIB_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS) $(RAND_TESTS) $(RET_TESTS) $(RETX_TESTS)
 
 UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getstack1 getstack2
 
@@ -98,7 +97,7 @@ all: $(SHLIBS) $(TESTS) $(UTILS) paxtest
 endif
 
 # we need the failure handling, for kernels not supporting EI_PAX
-DUMMY := $(shell echo '${CHPAXBIN} $$* 2>/dev/null ||:' >> paxbin; chmod +x paxbin)
+DUMMY := $(shell echo '${CHPAXBIN} $$* >/dev/null 2>/dev/null ||:' >> paxbin; chmod +x paxbin)
 
 PAXBIN := ./paxbin
 DL := -ldl
@@ -107,8 +106,9 @@ clean:
 	-rm -f *.o *.s *~ core
 	-rm -f $(TESTS) $(UTILS) $(SHLIBS)
 	-rm -f paxtest paxtest.log a.out dumpspecs paxbin
+	-rm -f chpax-0.7/*.o
 	-rm -f chpax
-
+	
 ifdef DESTDIR
 ifdef BINDIR
 ifdef RUNDIR
@@ -159,10 +159,11 @@ getheap1: getheap1.o
 
 getmain1: getmain1.o
 	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $<
+	-$(PAXBIN) -C $@
 	$(PAXBIN) -SPRXM $@
 
-getheap2 getmain2: $(PAX_DEP) getheap2.o getmain2.o
-	$(CC) $(LDFLAGS) $(LD_PIE) -o $@ $(PAX_DEP) $@.o || (echo -e "#!/bin/sh\necho $@ pie not implemented" > $@; chmod +x $@)
+getheap2 getmain2: getheap2.o getmain2.o
+	$(CC) $(LDFLAGS) $(LD_PIE) -o $@ $@.o || (echo -e "#!/bin/sh\necho $@ pie not implemented" > $@; chmod +x $@)
 
 getshlib: getshlib.o
 	$(CC) $(LDFLAGS) -o $@ $< $(DL)
@@ -172,16 +173,18 @@ getshlib: getshlib.o
 # Pax Team does not want "m" for getstack1/2
 getstack1: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	$(PAXBIN) -SRp $@
+	-$(PAXBIN) -C $@
+	$(PAXBIN) -SRpm $@
 
 getstack2: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $<
 	# disable segmexec, kernel else overrides pageexec
-	$(PAXBIN) -PRs $@
+	-$(PAXBIN) -C $@
+	$(PAXBIN) -PRsm $@
 	
 $(MPROTSH_TESTS): body.o shlibtest.so
 	$(CC) $(CFLAGS) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) $(PTHREAD) -o $@ $@.o $^
+	$(CC) $(LDFLAGS) $(DL) $(PTHREAD) -o $@ $@.o $^
 
 # used for RANDEXEC'd binaries
 retbody.o: body.c
@@ -196,6 +199,7 @@ $(RET_TESTS): retbody.o
 $(RETX_TESTS): retbody.o
 	$(CC) $(CFLAGS) $(CC_ETEXEC) -o $@.o -c $@.c
 	$(CC) $(LDFLAGS) $(LD_ETEXEC) $(PTHREAD) -o $@ $< $@.o
+	-$(PAXBIN) -C $@
 	$(PAXBIN) -SPXM $@
 	
 # should also shlibbss.o and shlibdata.o be built w/ PIC?

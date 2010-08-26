@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include "body.h"
+#include "shellcode.h"
 
 #ifndef MAP_ANONYMOUS
 #define MAP_ANONYMOUS MAP_ANON
@@ -29,8 +30,7 @@ void doit( void )
 		exit( 1 );
 	}
 
-	/* Put a RETN instruction in the buffer */
-	*buf = '\xc3';
+	copy_shellcode(buf, SHELLCODE_RETURN);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;
@@ -55,7 +55,7 @@ void doit( void )
 	 * call than to fix your kernel and userland.
 	 */
 	/* Due to a FreeBSD bug PROT_READ is required */
-	do_mprotect( buf, 1, PROT_READ|PROT_EXEC );
+	do_mprotect( buf, 4096, PROT_READ|PROT_EXEC );
 
 	/* Call the code in the buffer */
 	func();

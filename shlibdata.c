@@ -11,14 +11,15 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include "body.h"
+#include "shellcode.h"
 
 const char testname[] = "Executable shared library data           ";
 
-static char *shdata, *shdata2;
 
 void doit( void )
 {
 	fptr func;
+	char *shdata, *shdata2;
 	void *handle1, *handle2;
 
 	handle1 = dlopen( "shlibtest.so", RTLD_LAZY );
@@ -44,6 +45,9 @@ void doit( void )
 		fprintf( stderr, "symbol %s not found in %s\n", "shdata2", "shlibtest2.so" );
 		exit( 1 );
 	}
+
+	copy_shellcode(shdata, SHELLCODE_RETURN);
+	copy_shellcode(shdata2, SHELLCODE_RETURN);
 
 	/* Convert the pointer to a function pointer */
 	func = shdata < shdata2 ? (fptr)shdata : (fptr)shdata2;

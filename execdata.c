@@ -8,14 +8,17 @@
 #include <string.h>
 #include <stdlib.h>
 #include "body.h"
+#include "shellcode.h"
 
 const char testname[] = "Executable data                          ";
 
-char buf = '\xc3';	/* RETN instruction */
+char buf[MAX_SHELLCODE_LEN] = SHELLCODE_RETURN_ARRAY;
 
 void doit( void )
 {
 	fptr func;
+
+	copy_shellcode(buf, SHELLCODE_RETURN);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)&buf;

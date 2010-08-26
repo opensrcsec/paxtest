@@ -1,6 +1,9 @@
 Choose one of the following make targets:
 
-linux		Linux
+linux		Linux (gcc default)
+linux32		32bit Linux
+linux64		64bit Linux
+
 openbsd		OpenBSD
 
 clean		Clean up

@@ -10,6 +10,12 @@ all:
 linux:
 	make -f Makefile.psm
 
+linux32:
+	make -f Makefile.psm THEARCH=-m32
+
+linux64:
+	make -f Makefile.psm THEARCH=-m64
+
 openbsd:
 	gmake -f Makefile.OpenBSD
 

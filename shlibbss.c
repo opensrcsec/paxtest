@@ -11,13 +11,14 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include "body.h"
+#include "shellcode.h"
 
 const char testname[] = "Executable shared library bss            ";
 
-static char *shbss, *shbss2;
-
 void doit( void )
 {
+	char *shbss;
+	char *shbss2;
 	fptr func;
 	void *handle1, *handle2;
 
@@ -45,9 +46,8 @@ void doit( void )
 		exit( 1 );
 	}
 
-	/* Put a RETN instruction in the buffer */
-	*shbss = '\xc3';
-	*shbss2 = '\xc3';
+	copy_shellcode(shbss, SHELLCODE_RETURN);
+	copy_shellcode(shbss2, SHELLCODE_RETURN);
 
 	/* Convert the pointer to a function pointer */
 	func = shbss < shbss2 ? (fptr)shbss : (fptr)shbss2;

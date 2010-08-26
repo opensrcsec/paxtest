@@ -8,5 +8,5 @@
 #error RUNDIR not defined
 #endif
 
-const char testname[] = "Main executable randomisation (ET_DYN)   ";
+const char testname[] = "Main executable randomisation (PIE)      ";
 const char testprog[] = RUNDIR"/getmain2";

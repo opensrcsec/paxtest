@@ -9,7 +9,7 @@
 #include <string.h>
 #include "body.h"
 
-const char testname[] = "Return to function (strcpy, RANDEXEC)    ";
+const char testname[] = "Return to function (strcpy, PIE)         ";
 
 fptr overflow[32] = {
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,

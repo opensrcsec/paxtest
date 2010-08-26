@@ -10,22 +10,22 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 #include "body.h"
+#include "shellcode.h"
 
 const char testname[] = "Executable stack (mprotect)              ";
 
 void doit( void )
 {
-	char buf;
+	char buf[MAX_SHELLCODE_LEN];
 	fptr func;
 
-	/* Put a RETN instruction in the buffer */
-	buf = '\xc3';
+	copy_shellcode(buf, SHELLCODE_RETURN);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)&buf;
 
 	/* Try to make the stack executable first */
-	do_mprotect( &buf, 1, PROT_READ|PROT_WRITE|PROT_EXEC );
+	do_mprotect( &buf, sizeof(buf), PROT_READ|PROT_WRITE|PROT_EXEC );
 
 	/* Call the code in the buffer */
 	func();

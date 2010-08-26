@@ -1,6 +1,10 @@
-Paxtest v0.9.7 README file
+Paxtest v0.9.9 README file
 
 Copyright (c)2004 by Peter Busser <peter@adamantix.org>
+
+Additional architecture/target support & fixes
+by Brad Spengler <spender@grsecurity.net>
+
 This file has been released under the GNU GPL version 2 or later.
 
 

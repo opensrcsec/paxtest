@@ -8,7 +8,7 @@
 #include <string.h>
 #include "body.h"
 
-const char testname[] = "Return to function (memcpy, RANDEXEC)    ";
+const char testname[] = "Return to function (memcpy, PIE)         ";
 
 fptr overflow[32] = {
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,

@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "body.h"
+#include "shellcode.h"
 
 const char testname[] = "Executable heap                          ";
 
@@ -16,14 +17,13 @@ void doit( void )
 	char *buf;
 	fptr func;
 
-	buf = malloc( 1 );
+	buf = malloc( MAX_SHELLCODE_LEN );
 	if( buf == NULL ) {
 		fprintf( stderr, "Out of memory\n" );
 		exit( 1 );
 	}
 
-	/* Put a RETN instruction in the buffer */
-	*buf = '\xc3';
+	copy_shellcode(buf, SHELLCODE_RETURN);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;

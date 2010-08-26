@@ -11,13 +11,13 @@
 #endif
 
 /* Read flags */
-int			read_header(char *name, int mode)
+int			read_header(char *name, int flags)
 {
    char			*ptr;
    int			size;
    int			block;
    
-   if ((fd = open(name, mode)) < 0)
+   if ((fd = open(name, flags)) < 0)
      return 1;
    
    ptr = (char *) &header_elf64;

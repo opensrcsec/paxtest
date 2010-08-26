@@ -24,7 +24,7 @@ static void sigsegv( int sig )
 
 void doit( void )
 {
-	char *buf;
+	volatile char *buf;
 	char c;
 
 	buf = (char*)shlibtest;
@@ -48,6 +48,7 @@ void doit( void )
 	do_mprotect( buf, 4096, PROT_READ|PROT_WRITE|PROT_EXEC );
 
 	/* Try to write something */
+	/* gcc 4.5 optimized this out if buf wasn't volatile */
 	*buf = 'X';
 
 	/* It worked when the function returns */

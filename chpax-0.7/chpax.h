@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -62,7 +63,7 @@ extern unsigned long		(*get_flags)();
 extern void			(*put_flags)(unsigned long);
 
 /* Function prototypes */
-int                     read_header(char *name, int mode);
+int                     read_header(char *name, int flags);
 int			write_header();
 unsigned long		get_flags_elf();
 void			put_flags_elf(unsigned long flags);
