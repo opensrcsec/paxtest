@@ -99,7 +99,7 @@ int do_mprotect( const void *addr, size_t len, int prot )
 	ptr = (char *)(((unsigned long) addr) & ~(PAGESIZE-1));
 
 	retval = mprotect( ptr, len, prot );
-	if( retval != 0 && errno == EINVAL ) {
+	if( retval != 0 && (errno == EINVAL)) {
 		perror( "could not mprotect():" );
 		exit( 1 );
 	}

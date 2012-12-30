@@ -29,6 +29,8 @@ TESTS=	anonmap \
 	randshlib \
 	randstack1 \
 	randstack2 \
+	randarg1 \
+	randarg2 \
 	rettofunc1 \
 	rettofunc1x \
 	rettofunc2 \
@@ -44,7 +46,9 @@ UTILS=	getamap \
 	getmain2 \
 	getshlib \
 	getstack1 \
-	getstack2
+	getstack2 \
+	getarg1 \
+	getarg2
 
 SHLIBS=	shlibtest.so \
 	shlibtest2.so
@@ -110,6 +114,14 @@ getstack1: getstack.o
 getstack2: getstack1
 	rm -f $@
 	cp getstack1 $@
+	chmod +x $@
+
+getarg1: getarg.o
+	$(CC) $(LDFLAGS) -o $@ $+
+
+getarg2: getarg1
+	rm -f $@
+	cp getarg1 $@
 	chmod +x $@
 
 mprotanon: body.o mprotanon.o

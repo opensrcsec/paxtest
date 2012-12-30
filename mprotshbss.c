@@ -57,10 +57,8 @@ void doit( void )
 	/* Try to make the memory region executable by using mprotect() */
 	/* Due to an OpenBSD bug PROT_READ is required */
 	do_mprotect(func, MAX_SHELLCODE_LEN, PROT_READ|PROT_EXEC );
-
 	/* Call the code in the buffer */
 	func();
-
 	do_mprotect(func, MAX_SHELLCODE_LEN, PROT_READ|PROT_WRITE );
 
 	/* It worked when the function returns */

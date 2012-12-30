@@ -9,6 +9,7 @@
 CC := gcc
 LD := ld
 CC_PIC := -fPIC
+GCC_SPCS := $(shell $(CC) -print-file-name=${GCC_SPECS:-specs})
 
 check_gcc = $(shell if $(CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; \
 	then echo "$(1)"; else echo "$(2)"; fi)
@@ -31,7 +32,7 @@ CC_MSECURE_PLT := $(call check_gcc,-msecure-plt,)
 LD_PIE = $(shell $(LD) --help | grep -q pie && echo "-pie")
 ifneq ($(LD_PIE),)
 # Gentoo (hardened specs enabled)
-CC_ETEXEC = $(shell $(CC) -dumpspecs | grep -q "\!nopie" && echo "-nopie")
+CC_ETEXEC = $(shell grep -q "\!nopie" $(GCC_SPCS) && echo "-nopie")
 LD_ETEXEC = $(CC_ETEXEC)
 endif
 
@@ -76,13 +77,13 @@ EXEC_TESTS = anonmap execbss execdata execheap execstack
 MPROT_TESTS = mprotanon mprotbss mprotdata mprotheap mprotstack
 SHLIB_TESTS = shlibbss shlibdata
 MPROTSH_TESTS = mprotshbss mprotshdata writetext
-RAND_TESTS = randamap randheap1 randheap2 randmain1 randmain2 randshlib randstack1 randstack2
+RAND_TESTS = randamap randheap1 randheap2 randmain1 randmain2 randshlib randstack1 randstack2 randarg1 randarg2
 RET_TESTS = rettofunc1 rettofunc2
 RETX_TESTS = rettofunc1x rettofunc2x
 
 TESTS = $(EXEC_TESTS) $(SHLIB_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS) $(RAND_TESTS) $(RET_TESTS) $(RETX_TESTS)
 
-UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getstack1 getstack2
+UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getstack1 getstack2 getarg1 getarg2
 
 SHLIBS=	shlibtest.so shlibtest2.so
 
@@ -135,7 +136,7 @@ paxtest: $(TESTS) genpaxtest
 
 $(EXEC_TESTS) $(MPROT_TESTS): body.o
 	$(CC) $(CFLAGS) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) $(PTHREAD) -o $@ $< $@.o
+	$(CC) $(LDFLAGS) -o $@ $< $@.o $(PTHREAD)
 	
 $(RAND_TESTS): randbody.o
 	$(CC) $(CFLAGS) -o $@.o -c $@.c
@@ -181,10 +182,21 @@ getstack2: getstack.o
 	# disable segmexec, kernel else overrides pageexec
 	-$(PAXBIN) -C $@
 	$(PAXBIN) -PRsm $@
+
+getarg1: getarg.o
+	$(CC) $(LDFLAGS) -o $@ $<
+	-$(PAXBIN) -C $@
+	$(PAXBIN) -SRpm $@
+
+getarg2: getarg.o
+	$(CC) $(LDFLAGS) -o $@ $<
+	# disable segmexec, kernel else overrides pageexec
+	-$(PAXBIN) -C $@
+	$(PAXBIN) -PRsm $@
 	
 $(MPROTSH_TESTS): body.o shlibtest.so
 	$(CC) $(CFLAGS) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) $(DL) $(PTHREAD) -o $@ $@.o $^
+	$(CC) $(LDFLAGS) -o $@ $@.o $^ $(DL) $(PTHREAD)
 
 # used for RANDEXEC'd binaries
 retbody.o: body.c
@@ -193,12 +205,12 @@ retbody.o: body.c
 # build as ET_EXEC (recommended by PaX Team, not really a requirement)
 $(RET_TESTS): retbody.o
 	$(CC) $(CFLAGS) $(CC_ETEXEC) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) $(LD_ETEXEC) $(PTHREAD) -o $@ $< $@.o
+	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $< $@.o $(PTHREAD)
 
 # build as ET_EXEC (not in Adamantix's Makefile)
 $(RETX_TESTS): retbody.o
 	$(CC) $(CFLAGS) $(CC_ETEXEC) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) $(LD_ETEXEC) $(PTHREAD) -o $@ $< $@.o
+	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $< $@.o $(PTHREAD)
 	-$(PAXBIN) -C $@
 	$(PAXBIN) -SPXM $@
 	
@@ -211,4 +223,4 @@ shlib%.so: shlib%.o
 	$(CC) $(SHLDFLAGS) -shared -o $@ $<
 
 $(SHLIB_TESTS): body.o $(SHLIBS) shlibbss.o shlibdata.o
-	$(CC) $(LDFLAGS) $(PTHREAD) -o $@ body.o $@.o $(SHLIBS) $(DL)
+	$(CC) $(LDFLAGS) -o $@ body.o $@.o $(SHLIBS) $(DL) $(PTHREAD)
