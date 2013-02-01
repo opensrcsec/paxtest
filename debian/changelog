@@ -1,3 +1,6 @@
+paxtest (0.9.11-1) stable; urgency=low
+  * Added display of exhaustion tests
+
 paxtest (0.9.10-1) stable; urgency=low
   * Fixed compilation problem reported on forums
   * Added display of argv/env randomization
