@@ -15,6 +15,10 @@
 #define SHELLCODE_RETURN_ARRAY { '\x9d', '\xe3', '\xbf', '\x40', '\x81', '\xcf', '\xe0', '\x08', '\x01', '\x00', '\x00', '\x00' }
 #define SHELLCODE_RETURN "\x9d\xe3\xbf\x40\x81\xcf\xe0\x08\x01\x00\x00\x00"
 #define SIZE_OF_SHELLCODE_RETURN 12
+#elif defined(__arm__) && !defined(__arch64__)
+#define SHELLCODE_RETURN_ARRAY { '\x1e', '\xff', \x2f', \xe1' }
+#define SHELLCODE_RETURN "\x1e\xff\x2f\xe1"
+#define SIZE_OF_SHELLCODE_RETURN 4
 #else
 #define SHELLCODE_RETURN_ARRAY { '\xc3' }
 #define SHELLCODE_RETURN "\xc3"
