@@ -1,13 +1,13 @@
-/* randbody.c - This part is shared by the randomisation tests
+/* fastrandbody.c - This part is shared by the randomisation tests
  *
- * Copyright (c)2003-2014 by Peter Busser <peter@adamantix.org>, Brad Spengler <spender@grsecurity.net>
+ * Copyright (c)2003 by Peter Busser <peter@adamantix.org>
  * This file has been released under the GNU Public Licence version 2 or later
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#define COUNT	(1500)
+#define COUNT	(25)
 
 extern const char testname[];
 extern const char testprog[];
@@ -15,11 +15,7 @@ extern const char testprog[];
 int main( int argc, char *argv[] )
 {
 	FILE *fp;
-	int i, x;
-	unsigned long results[COUNT];
-	unsigned int quality[8 * sizeof(unsigned long)] = { 0 };
-	unsigned int weak_bits = 0;
-	unsigned int dupes = 0;
+	int i;
 	unsigned long tmp;
 	unsigned long and;
 	unsigned long or;
@@ -42,7 +38,6 @@ int main( int argc, char *argv[] )
 			perror ( testprog );
 			exit( 1 );
 		}
-		results[i] = tmp;
 		and &= tmp;
 		or |= tmp;
 
@@ -55,22 +50,12 @@ int main( int argc, char *argv[] )
 		tmp = and ^ ~or;
 		tmp = or & ~tmp;
 		bits = 0;
-		for (i = 0; i < sizeof(quality)/sizeof(quality[0]); i++) {
-			if (!(tmp & (1UL << i)))
-				continue;
-			for (x = 0; x < COUNT; x++) {
-				if (results[x] & (1UL << i))
-					quality[i] += 1;
-			}
-			if (quality[i] <= ((COUNT * 35) / 100) || quality[i] >= ((COUNT * 65) / 100))
-				weak_bits++;
-		}
 		while( tmp != 0 ) {
 			bits += (tmp%2);
 			tmp >>= 1;
 		}
 
-		printf( "%d quality bits (guessed)\n", bits - weak_bits);
+		printf( "%d bits (guessed)\n", bits );
 	}
 
 	exit( 0 );

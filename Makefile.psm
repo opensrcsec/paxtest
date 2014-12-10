@@ -77,13 +77,14 @@ EXEC_TESTS = anonmap execbss execdata execheap execstack
 MPROT_TESTS = mprotanon mprotbss mprotdata mprotheap mprotstack
 SHLIB_TESTS = shlibbss shlibdata
 MPROTSH_TESTS = mprotshbss mprotshdata writetext
-RAND_TESTS = randamap randheap1 randheap2 randmain1 randmain2 randshlib randstack1 randstack2 randarg1 randarg2 randexhaust1 randexhaust2
+RAND_TESTS = randamap randheap1 randheap2 randmain1 randmain2 randshlib randvdso randstack1 randstack2 randarg1 randarg2
+FAST_RAND_TESTS = randexhaust1 randexhaust2
 RET_TESTS = rettofunc1 rettofunc2
 RETX_TESTS = rettofunc1x rettofunc2x
 
-TESTS = $(EXEC_TESTS) $(SHLIB_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS) $(RAND_TESTS) $(RET_TESTS) $(RETX_TESTS)
+TESTS = $(EXEC_TESTS) $(SHLIB_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS) $(RAND_TESTS) $(FAST_RAND_TESTS) $(RET_TESTS) $(RETX_TESTS)
 
-UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getstack1 getstack2 getarg1 getarg2 getexhaust1 getexhaust2
+UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getvdso getstack1 getstack2 getarg1 getarg2 getexhaust1 getexhaust2
 
 SHLIBS=	shlibtest.so shlibtest2.so
 
@@ -139,6 +140,10 @@ $(EXEC_TESTS) $(MPROT_TESTS): body.o
 	$(CC) $(LDFLAGS) -o $@ $< $@.o $(PTHREAD)
 	
 $(RAND_TESTS): randbody.o
+	$(CC) $(CFLAGS) -o $@.o -c $@.c
+	$(CC) $(LDFLAGS) -o $@ $< $@.o
+
+$(FAST_RAND_TESTS): fastrandbody.o
 	$(CC) $(CFLAGS) -o $@.o -c $@.c
 	$(CC) $(LDFLAGS) -o $@ $< $@.o
 
