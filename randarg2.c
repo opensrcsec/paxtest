@@ -1,4 +1,4 @@
-/* randarg.c - Tests the randomisation of arguments/environment
+/* randarg.c - Tests the randomization of arguments/environment
  * 
  */
 
@@ -6,5 +6,5 @@
 #error RUNDIR not defined
 #endif
 
-const char testname[] = "Arg/env randomisation test (PAGEEXEC)    ";
+const char testname[] = "Arg/env randomization test (PAGEEXEC)    ";
 const char testprog[] = RUNDIR"/getarg2";

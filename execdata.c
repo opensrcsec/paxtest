@@ -12,13 +12,13 @@
 
 const char testname[] = "Executable data                          ";
 
-char buf[MAX_SHELLCODE_LEN] = SHELLCODE_RETURN_ARRAY;
+char buf[MAX_SHELLCODE_LEN] = { 'A' };
 
 void doit( void )
 {
 	fptr func;
 
-	copy_shellcode(buf, SHELLCODE_RETURN);
+	copy_shellcode(buf);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)&buf;

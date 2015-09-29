@@ -24,13 +24,13 @@ void doit( void )
 	char *buf;
 	fptr func;
 
-	buf = mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+	buf = mmap(NULL, PAGE_SIZE_MAX, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 	if( buf == MAP_FAILED ) {
 		fprintf( stderr, "mmap() returned NULL\n" );
 		exit( 1 );
 	}
 
-	copy_shellcode(buf, SHELLCODE_RETURN);
+	copy_shellcode(buf);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;
@@ -55,7 +55,7 @@ void doit( void )
 	 * call than to fix your kernel and userland.
 	 */
 	/* Due to a FreeBSD bug PROT_READ is required */
-	do_mprotect( buf, 4096, PROT_READ|PROT_EXEC );
+	do_mprotect( buf, PAGE_SIZE_MAX, PROT_READ|PROT_EXEC );
 
 	/* Call the code in the buffer */
 	func();

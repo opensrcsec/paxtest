@@ -8,10 +8,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "body.h"
+#include "paxtest.h"
 
 const char testname[] = "Return to function (strcpy)              ";
 
-fptr overflow[32] = {
+static const fptr overflow[32] = {
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
@@ -20,10 +21,10 @@ fptr overflow[32] = {
 
 void doit( void )
 {
-	char buf[4];
+	char buf[sizeof(unsigned long)];
 
 	if (strlen((const char *)overflow) > sizeof(overflow[0])) {
-		strcpy( buf, (const char *)overflow );
+		forced_strcpy( buf, (const char *)overflow );
 	} else {
 		fprintf( stderr, "paxtest: return address contains a NULL byte.\n" );
 		exit(1);

@@ -14,13 +14,13 @@
 
 const char testname[] = "Executable bss (mprotect)                ";
 
-char buf[MAX_SHELLCODE_LEN];
+char buf[PAGE_SIZE_MAX] __pagealigned;
 
 void doit( void )
 {
 	fptr func;
 
-	copy_shellcode(buf, SHELLCODE_RETURN);
+	copy_shellcode(buf);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)&buf;

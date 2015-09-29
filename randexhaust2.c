@@ -1,4 +1,4 @@
-/* randexhaust2.c - Tests the randomisation under memory exhaustion
+/* randexhaust2.c - Tests the randomization under memory exhaustion
  * when trying to get a fixed address at the bottom of the address space
  */
 

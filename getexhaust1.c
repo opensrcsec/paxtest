@@ -15,7 +15,7 @@ int main(void)
 
 	while (1) {
 		addr = mmap(NULL, 0x1000, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-		if (addr == 0xffffffff)
+		if (addr == MAP_FAILED)
 			break;
 		last_addr = addr;
 	}

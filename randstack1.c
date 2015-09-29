@@ -1,4 +1,4 @@
-/* randstack.c - Tests the randomisation of the stack pointer.
+/* randstack.c - Tests the randomization of the stack pointer.
  * 
  * Copyright (c)2003 by Peter Busser <peter@adamantix.org>
  * This file has been released under the GNU Public Licence version 2 or later
@@ -8,5 +8,5 @@
 #error RUNDIR not defined
 #endif
 
-const char testname[] = "Stack randomisation test (SEGMEXEC)      ";
+const char testname[] = "Stack randomization test (SEGMEXEC)      ";
 const char testprog[] = RUNDIR"/getstack1";

@@ -25,11 +25,11 @@ void doit( void )
 		exit( 1 );
 	}
 
-	copy_shellcode(buf, SHELLCODE_RETURN);
+	copy_shellcode(buf);
 
 	/* Try to make the buffer executable by using mprotect() */
 	/* Due to a FreeBSD bug PROT_READ is required */
-	do_mprotect( buf, SIZE_OF_SHELLCODE_RETURN, PROT_READ|PROT_EXEC );
+	do_mprotect( buf, MAX_SHELLCODE_LEN, PROT_READ|PROT_EXEC );
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;

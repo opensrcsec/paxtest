@@ -1,4 +1,4 @@
-/* fastrandbody.c - This part is shared by the randomisation tests
+/* fastrandbody.c - This part is shared by the randomization tests
  *
  * Copyright (c)2003 by Peter Busser <peter@adamantix.org>
  * This file has been released under the GNU Public Licence version 2 or later
@@ -45,7 +45,7 @@ int main( int argc, char *argv[] )
 	}
 
 	if( and == or ) {
-		printf( "No randomisation\n" );
+		printf( "No randomization\n" );
 	} else {
 		tmp = and ^ ~or;
 		tmp = or & ~tmp;

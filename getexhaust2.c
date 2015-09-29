@@ -20,7 +20,7 @@ int main(void)
 
 	while (1) {
 		addr = mmap(NULL, 0x1000, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-		if (addr == 0xffffffff)
+		if (addr == MAP_FAILED)
 			break;
 		if (addr > (char *)&addr)
 			can_map_above_stack = 1;
@@ -34,7 +34,7 @@ int main(void)
 		while (1) {
 			munmap(maps[--num_maps], 0x1000);
 			addr = mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-			if (addr == 0xffffffff)
+			if (addr == MAP_FAILED)
 				break;
 			munmap(addr, map_size);
 			map_size += 0x1000;

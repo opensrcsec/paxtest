@@ -47,8 +47,8 @@ void doit( void )
 		exit( 1 );
 	}
 
-	copy_shellcode(shdata, SHELLCODE_RETURN);
-	copy_shellcode(shdata2, SHELLCODE_RETURN);
+	copy_shellcode(shdata);
+	copy_shellcode(shdata2);
 
 	/* Convert the pointer to a function pointer */
 	func = shdata < shdata2 ? (fptr)shdata : (fptr)shdata2;

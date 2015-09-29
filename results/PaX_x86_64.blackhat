@@ -1,0 +1,38 @@
+PaXtest - Copyright(c) 2003-2014 by Peter Busser <peter@adamantix.org> and Brad Spengler <spender@grsecurity.net>
+Released under the GNU Public Licence version 2 or later
+
+Mode: blackhat
+Linux debian 4.1.3-grsec+ #2 SMP PREEMPT Sun Jul 26 19:22:38 EDT 2015 x86_64 GNU/Linux
+
+Executable anonymous mapping             : Killed
+Executable bss                           : Killed
+Executable data                          : Killed
+Executable heap                          : Killed
+Executable stack                         : Killed
+Executable shared library bss            : Killed
+Executable shared library data           : Killed
+Executable anonymous mapping (mprotect)  : Killed
+Executable bss (mprotect)                : Killed
+Executable data (mprotect)               : Killed
+Executable heap (mprotect)               : Killed
+Executable stack (mprotect)              : Killed
+Executable shared library bss (mprotect) : Killed
+Executable shared library data (mprotect): Killed
+Writable text segments                   : Killed
+Anonymous mapping randomization test     : 28 quality bits (guessed)
+Heap randomization test (ET_EXEC)        : 22 quality bits (guessed)
+Heap randomization test (PIE)            : 35 quality bits (guessed)
+Main executable randomization (ET_EXEC)  : No randomization
+Main executable randomization (PIE)      : 27 quality bits (guessed)
+Shared library randomization test        : 28 quality bits (guessed)
+VDSO randomization test                  : 28 quality bits (guessed)
+Stack randomization test (SEGMEXEC)      : 35 quality bits (guessed)
+Stack randomization test (PAGEEXEC)      : 35 quality bits (guessed)
+Arg/env randomization test (SEGMEXEC)    : 39 quality bits (guessed)
+Arg/env randomization test (PAGEEXEC)    : 39 quality bits (guessed)
+Randomization under memory exhaustion @~0: 28 bits (guessed)
+Randomization under memory exhaustion @0 : 28 bits (guessed)
+Return to function (strcpy)              : paxtest: return address contains a NULL byte.
+Return to function (memcpy)              : Vulnerable
+Return to function (strcpy, PIE)         : paxtest: return address contains a NULL byte.
+Return to function (memcpy, PIE)         : Vulnerable

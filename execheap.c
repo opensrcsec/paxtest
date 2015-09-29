@@ -23,7 +23,7 @@ void doit( void )
 		exit( 1 );
 	}
 
-	copy_shellcode(buf, SHELLCODE_RETURN);
+	copy_shellcode(buf);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)buf;

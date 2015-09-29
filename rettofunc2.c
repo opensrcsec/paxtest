@@ -7,10 +7,11 @@
 #include <stdio.h>
 #include <string.h>
 #include "body.h"
+#include "paxtest.h"
 
 const char testname[] = "Return to function (memcpy)              ";
 
-fptr overflow[32] = {
+static const fptr overflow[32] = {
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
 	itworked, itworked, itworked, itworked, itworked, itworked, itworked, itworked,
@@ -19,7 +20,7 @@ fptr overflow[32] = {
 
 void doit( void )
 {
-	char buf[4];
+	char buf[sizeof(unsigned long)];
 
-	memcpy( buf, overflow, sizeof( overflow ) );
+	forced_memcpy( buf, overflow, sizeof( overflow ) );
 }

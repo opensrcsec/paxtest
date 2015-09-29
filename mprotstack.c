@@ -19,7 +19,7 @@ void doit( void )
 	char buf[MAX_SHELLCODE_LEN];
 	fptr func;
 
-	copy_shellcode(buf, SHELLCODE_RETURN);
+	copy_shellcode(buf);
 
 	/* Convert the pointer to a function pointer */
 	func = (fptr)&buf;
