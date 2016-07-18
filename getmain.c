@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void foo(void)
+void __attribute__ ((noinline)) foo(void)
 {
 	printf( "%p\n", __builtin_return_address(0) );
 }

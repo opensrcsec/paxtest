@@ -65,7 +65,7 @@ endif
 # The Hardened GCC compiler has stack protector on by default, this
 # could interfere with the results of this test.
 
-CFLAGS	:= $(OPT_FLAGS) -D_FORTIFY_SOURCE=0 -DRUNDIR=\"${RUNDIR}\" $(CC_SSP) $(CC_TRAMPOLINES)
+CFLAGS	:= $(OPT_FLAGS) -U_FORTIFY_SOURCE -DRUNDIR=\"${RUNDIR}\" $(CC_SSP) $(CC_TRAMPOLINES)
 
 ifneq ($(THEARCH),)
 CFLAGS += $(THEARCH)
@@ -77,14 +77,14 @@ EXEC_TESTS = anonmap execbss execdata execheap execstack
 MPROT_TESTS = mprotanon mprotbss mprotdata mprotheap mprotstack
 SHLIB_TESTS = shlibbss shlibdata
 MPROTSH_TESTS = mprotshbss mprotshdata writetext
-RAND_TESTS = randamap randheap1 randheap2 randmain1 randmain2 randshlib randvdso randstack1 randstack2 randarg1 randarg2
+RAND_TESTS = randamap randheap1 randheap2 randmain1 randmain2 randshlib randvdso randstack1 randstack2 randarg1 randarg2 randshlibdelta1 randshlibdelta2
 FAST_RAND_TESTS = randexhaust1 randexhaust2
 RET_TESTS = rettofunc1 rettofunc2
 RETX_TESTS = rettofunc1x rettofunc2x
 
 TESTS = $(EXEC_TESTS) $(SHLIB_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS) $(RAND_TESTS) $(FAST_RAND_TESTS) $(RET_TESTS) $(RETX_TESTS)
 
-UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getvdso getstack1 getstack2 getarg1 getarg2 getexhaust1 getexhaust2
+UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getvdso getstack1 getstack2 getarg1 getarg2 getexhaust1 getexhaust2 getshlibdelta1 getshlibdelta2
 
 SHLIBS=	shlibtest.so shlibtest2.so
 
@@ -128,7 +128,7 @@ chpax: $(CHPAXSRC:.c=.o)
 	$(CC) $(LDFLAGS) -o $@ $^
 
 paxtest: $(TESTS) genpaxtest
-	sh genpaxtest $(TESTS)
+	sh genpaxtest $(CC) $(TESTS)
 
 .S.o:
 	$(CC) $(CFLAGS) $(CC_PIE) $(ASFLAGS) -o $@ -c $<
@@ -168,8 +168,16 @@ getmain1: getmain1.o
 	-$(PAXBIN) -C $@
 	$(PAXBIN) -SPRXM $@
 
+getshlibdelta1: getshlibdelta1.o
+	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $< $(DL)
+	-$(PAXBIN) -C $@
+	$(PAXBIN) -SPRXM $@
+
 getheap2 getmain2: getheap2.o getmain2.o
 	$(CC) $(LDFLAGS) $(LD_PIE) -o $@ $@.o || (echo -e "#!/bin/sh\necho $@ pie not implemented" > $@; chmod +x $@)
+
+getshlibdelta2: getshlibdelta2.o
+	$(CC) $(LDFLAGS) $(LD_PIE) -o $@ $@.o $(DL) || (echo -e "#!/bin/sh\necho $@ pie not implemented" > $@; chmod +x $@)
 
 getshlib: getshlib.o
 	$(CC) $(LDFLAGS) -o $@ $< $(DL)

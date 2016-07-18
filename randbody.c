@@ -27,6 +27,7 @@ int main( int argc, char *argv[] )
 	int ret;
 
 	printf( "%s: ", testname );
+	fflush(NULL);
 
 	and = ~0L;
 	or = 0L;

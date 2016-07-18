@@ -1,0 +1,276 @@
+#!/usr/bin/env make
+
+CC=cc
+ASFLAGS=
+CC_PIE=
+CFLAGS=
+LDFLAGS=
+SHLDFLAGS=
+ifndef RUNDIR
+RUNDIR=.
+endif
+
+ASFLAGS+= --noexecstack
+
+CFLAGS+= -O2
+CFLAGS+= -DRUNDIR=\"${RUNDIR}\"
+CFLAGS+= -fno-stack-protector
+CFLAGS+= -D_FORTIFY_SOURCE=0
+LDFLAGS+= -lpthread
+CC_PIE+= -fPIE -fPIC
+
+EXEC_TESTS=	\
+	anonmap \
+	execbss \
+	execdata \
+	execheap \
+	execstack
+
+MPROT_TESTS=	\
+	mprotanon \
+	mprotbss \
+	mprotdata \
+	mprotheap \
+	mprotstack
+
+SHLIB_TESTS=	\
+	shlibbss \
+	shlibdata
+
+MPROTSH_TESTS=	\
+	mprotshbss \
+	mprotshdata \
+	writetext
+
+RAND_TESTS=	\
+	randamap \
+	randheap1 \
+	randheap2 \
+	randmain1 \
+	randmain2 \
+	randshlib \
+	randvdso \
+	randstack1 \
+	randstack2 \
+	randarg1 \
+	randarg2
+
+FAST_RAND_TESTS=	\
+	randexhaust1 \
+	randexhaust2
+
+RET_TESTS=	\
+	rettofunc1 \
+	rettofunc2
+
+RETX_TESTS=	\
+	rettofunc1x \
+	rettofunc2x
+
+TESTS:= \
+       ${EXEC_TESTS} \
+       ${SHLIB_TESTS} \
+       ${MPROT_TESTS} \
+       ${MPROTSH_TESTS} \
+       ${RAND_TESTS} \
+       ${FAST_RAND_TESTS} \
+       ${RET_TESTS} \
+       ${RETX_TESTS}
+
+UTILS=	getamap \
+	getheap1 \
+	getheap2 \
+	getmain1 \
+	getmain2 \
+	getshlib \
+	getvdso \
+	getstack1 \
+	getstack2 \
+	getarg1 \
+	getarg2 \
+	getexhaust1 \
+	getexhaust2
+
+SHLIBS=	shlibtest.so \
+	shlibtest2.so
+
+all: ${SHLIBS} ${TESTS} ${UTILS} paxtest
+
+ifdef DESTDIR
+ifdef BINDIR
+ifdef RUNDIR
+install: all
+	mkdir -p ${DESTDIR}/${RUNDIR}
+	cp ${SHLIBS} ${TESTS} ${UTILS} ${DESTDIR}/${RUNDIR}
+	mkdir -p ${DESTDIR}/${BINDIR}
+	cp paxtest ${DESTDIR}/${BINDIR}
+	chmod 755 ${DESTDIR}/${BINDIR}/paxtest
+endif
+endif
+endif
+
+body.o: body.c
+	${CC} ${CFLAGS} -fPIC -o ${.TARGET} -c ${.ALLSRC}
+
+rettofunc1x.o: rettofunc1x.c
+	${CC} ${CFLAGS} -fPIC -o ${.TARGET} -c ${.ALLSRC}
+
+rettofunc2x.o: rettofunc2x.c
+	${CC} ${CFLAGS} -fPIC -o ${.TARGET} -c ${.ALLSRC}
+
+paxtest: ${TESTS} genpaxtest
+	sh genpaxtest ${CC} ${TESTS}
+
+anonmap: body.o anonmap.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+execbss: body.o execbss.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+execdata: body.o execdata.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+execheap: body.o execheap.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+execstack: body.o execstack.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+getheap1: getheap.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+getheap2: getheap.o
+	${CC} ${SHLDFLAGS} -pie -fPIE -o ${.TARGET} ${.ALLSRC}
+
+getheap.o: getheap.c
+	${CC} ${CFLAGS} -fPIC -o ${.TARGET} -c ${.ALLSRC}
+
+getamap.o: getamap.c
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+getmain1: getmain.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+getmain2: getmain2.o
+	${CC} ${SHLDFLAGS} -pie -fPIE -o ${.TARGET} ${.ALLSRC}
+
+getmain2.o: getmain.c
+	${CC} ${CFLAGS} -fPIC -o ${.TARGET} -c ${.ALLSRC}
+
+getshlib: getshlib.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+getstack1: getstack.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+getstack2: getstack1
+	rm -f ${.TARGET}
+	cp getstack1 ${.TARGET}
+	chmod +x ${.TARGET}
+
+getarg1: getarg.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+getarg2: getarg1
+	rm -f ${.TARGET}
+	cp getarg1 ${.TARGET}
+	chmod +x ${.TARGET}
+
+mprotanon: body.o mprotanon.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+mprotbss: body.o mprotbss.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+mprotheap: body.o mprotheap.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+mprotdata: body.o mprotdata.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+mprotshbss: body.o mprotshbss.o shlibtest.so
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+mprotshdata: body.o mprotshdata.o shlibtest.so
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+mprotstack: body.o mprotstack.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randamap: randbody.o randamap.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randarg1: randbody.o randarg1.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randarg2: randbody.o randarg2.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randheap1: randbody.o randheap1.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randheap2: randbody.o randheap2.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randexhaust1: fastrandbody.o randexhaust1.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randexhaust2: fastrandbody.o randexhaust2.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randmain1: randbody.o randmain1.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randmain2: randbody.o randmain2.o
+	${CC} ${LDFLAGS} ${SHLDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randshlib: randbody.o randshlib.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randstack1: randbody.o randstack1.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randstack2: randbody.o randstack2.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randvdso: randbody.o randvdso.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+rettofunc1: body.o rettofunc1.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+rettofunc1x: body.o rettofunc1x.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+rettofunc2: body.o rettofunc2.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+rettofunc2x: body.o rettofunc2x.o
+	${CC} ${LDFLAGS} -fPIE -pie -o ${.TARGET} ${.ALLSRC}
+
+shlibtest.o: shlibtest.c
+	${CC} ${CFLAGS} -fPIC -c ${.IMPSRC} -o ${.TARGET}
+
+shlibtest2.o: shlibtest2.c
+	${CC} ${CFLAGS} -fPIC -c ${.IMPSRC} -o ${.TARGET}
+
+shlibtest.so: shlibtest.o
+	${CC} ${SHLDFLAGS} -shared -o ${.TARGET} ${.ALLSRC}
+
+shlibtest2.so: shlibtest2.o
+	${CC} ${SHLDFLAGS} -shared -o ${.TARGET} ${.ALLSRC}
+
+shlibbss: body.o shlibbss.o shlibtest.so shlibtest2.so
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+shlibdata: body.o shlibdata.o shlibtest.so shlibtest2.so
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+writetext: body.o writetext.o shlibtest.so
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+clean:
+	-rm -f *.o *.s *~ core *.core
+	-rm -f ${SHLIBS} ${TESTS} ${UTILS}
+	-rm -f paxtest paxtest.log a.out
+	-rm -f paxbin

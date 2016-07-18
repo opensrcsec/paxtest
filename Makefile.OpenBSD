@@ -7,7 +7,7 @@ ifndef RUNDIR
 RUNDIR=.
 endif
 
-CFLAGS+=-DRUNDIR=\"${RUNDIR}\" -fno-stack-protector -ftrampolines
+CFLAGS+=-O2 -DRUNDIR=\"${RUNDIR}\" -fno-stack-protector -ftrampolines
 LDFLAGS+=-lpthread
 
 
@@ -74,7 +74,7 @@ endif
 endif
 
 paxtest: $(TESTS) genpaxtest
-	sh genpaxtest $(TESTS)
+	sh genpaxtest $(CC) $(TESTS)
 
 anonmap: body.o anonmap.o
 

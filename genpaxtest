@@ -16,23 +16,32 @@ fi
 cat << __here__ > paxtest
 #!/bin/sh
 
-if [ \$# = 1 ]
+if [ \$# = 1 -o \$# = 2 ]
 then
 	if [ "\$1" = "kiddie" ]
 	then
 		PAXTEST_MODE=0
+		shift
 	elif [ "\$1" = "blackhat" ]
 	then
 		PAXTEST_MODE=1
+		shift
 	else
-		echo "usage: paxtest [kiddie|blackhat]"
+		echo "usage: paxtest [kiddie|blackhat] [logfile]"
 		exit 1
 	fi
 else
-	echo "usage: paxtest [kiddie|blackhat]"
+	echo "usage: paxtest [kiddie|blackhat] [logfile]"
 	exit 1
 fi
 
+LOG=\$HOME/paxtest.log
+[ -n "\$1" ] && LOG=\$1
+touch "\$LOG"
+if [ ! -e "\$LOG" ]; then
+	echo "Could not create logfile in \$LOG" >&2
+	exit 1
+fi
 export PAXTEST_MODE
 
 if [ "\${LD_LIBRARY_PATH}" = "" ]
@@ -43,26 +52,38 @@ else
 fi
 export LD_LIBRARY_PATH
 
-cat <<__end__ | tee paxtest.log
-PaXtest - Copyright(c) 2003-2014 by Peter Busser <peter@adamantix.org> and Brad Spengler <spender@grsecurity.net>
+cat <<__end__ | tee \$LOG
+PaXtest - Copyright(c) 2003-2016 by Peter Busser <peter@adamantix.org> and Brad Spengler <spender@grsecurity.net>
 Released under the GNU Public Licence version 2 or later
 
 __end__
 
-echo "Mode: \$1" >>paxtest.log
-uname -a >>paxtest.log
-echo >>paxtest.log
+echo "Mode: \$PAXTEST_MODE" >>\$LOG
+if [ "\$PAXTEST_MODE" -eq 0 ]; then
+	echo -n "Kiddie" >>\$LOG
+fi
+if [ "\$PAXTEST_MODE" -eq 1 ]; then
+	echo -n "Blackhat" >>\$LOG
+fi
+echo >>\$LOG
 
-echo 'Writing output to paxtest.log'
+echo "Kernel: " >>\$LOG
+uname -a >>\$LOG
+echo >>\$LOG
+if [ -e /usr/bin/lsb_release ]; then
+	echo "Relase information: " >>\$LOG
+	lsb_release -a 2>/dev/null >>\$LOG
+fi
+echo "Test results:" >>\$LOG
+
+echo "Writing output to \$LOG"
 echo 'It may take a while for the tests to complete'
+echo "Test results:"
 
 for i in $*
 do
-	${RUNDIR}/\$i
-done >>paxtest.log 2>&1
-
-echo "Test results:"
-cat paxtest.log
+	${RUNDIR}/\$i || echo
+done 2>&1 | tee -a \$LOG
 
 echo
 

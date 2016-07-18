@@ -1,3 +1,17 @@
+paxtest (0.9.15-1) stable; urgency=low
+  * Change default location of logfile & add info to log file,
+    from Javier Fernandez-Sanguino (jfs@debian.org)
+  * Squelch _FORTIFY_SOURCE redefinition warning and various other
+    compiler warnings, from Kees Cook
+    (keescook@chromium.org)
+  * Validate that ET_DYN is separately randomized from shlibs
+    From Kees Cook (with fixes from Brad Spengler)
+  * Show output during result collection, from Kees Cook
+  * Free/HardenedBSD support, from Oliver Pinter (oliver.pinter@hardenedbsd.org)
+  * Two build fixes from David Sterba (dave@jikos.cz)
+  * Use correct address for PIE, didn't affect PaX results as it uses the same
+    entropy levels for PIE and mmap, from Ismael Ripoll and Hector Marco-Gisbert
+
 paxtest (0.9.14-1) stable; urgency=low
   * Various fixes/cleanups including ensuring an overflowing strcpy/memcpy isn't
     optimized away, from Mathias Krause (mathias.krause@secunet.com)

@@ -1,6 +1,8 @@
-/* getshlib.c - Get the address of a function in a shared library and print it
+/* getshlibdelta.c - Get the delta between a function in .text and a function in a
+ *                   shared library and print it
  *
  * Copyright (c)2003 by Peter Busser <peter@adamantix.org>
+ * Copyright (c)2014 by Kees Cook <keescook@chromium.org>
  * This file has been released under the GNU Public Licence version 2 or later
  */
 
@@ -14,26 +16,30 @@
 #ifdef __OpenBSD__
 #undef RTLD_DEFAULT
 #define RTLD_DEFAULT "libc.so"
-#elif defined(__FreeBSD__)
-#undef RTLD_DEFAULT
-#define RTLD_DEFAULT "libc.so.7"
 #endif
 
-int main( int argc, char *argv[] )
+void __attribute__ ((noinline)) foo(void)
 {
+	unsigned long ptr = (unsigned long)__builtin_return_address(0);
 	void *handle;
 
 	handle = dlopen( RTLD_DEFAULT, RTLD_LAZY );
-	if( handle != NULL ) {
-		void *sprintf;
+	if (handle != NULL) {
+		unsigned long sprintf;
 
 		dlerror(); /* clear any errors */
-		sprintf = dlsym( handle, "sprintf" );
+		sprintf = (unsigned long)dlsym( handle, "sprintf" );
+		if (dlerror() == NULL) {
+			printf( "%p\n", (void *)(ptr - sprintf) );
 
-		if( dlerror() == NULL ) {
-			printf( "%p\n", sprintf );
 		}
 
 		dlclose( handle );
 	}
+}
+
+int main(int argc, char *argv[])
+{
+	foo();
+	exit(0);
 }

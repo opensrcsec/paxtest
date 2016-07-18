@@ -16,6 +16,7 @@
 #include <sys/wait.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <string.h>
 #include "body.h"
 
 
@@ -29,14 +30,18 @@ int main( int argc, char *argv[] )
 {
 	int status;
 	char *mode;
-	/* This defaults to 1 as a safety mechanism. It is better to fail in
+
+	/*
+	 * This defaults to 1 as a safety mechanism. It is better to fail in
 	 * blackhat mode, because kiddie mode can produce overly optimistic
 	 * results.
 	 */
 	int paxtest_mode = 1;
 
+#ifndef __clang__
 	/* Dummy nested function */
 	void dummy(void) {}
+#endif
 
 	mode = getenv( "PAXTEST_MODE" );
 	if( mode == NULL ) {
@@ -45,7 +50,12 @@ int main( int argc, char *argv[] )
 		if( strcmp(mode,"0") == 0 ) {
 			paxtest_mode = 0;
 		} else if( strcmp(mode,"1") == 0 ) {
+#ifdef __clang__
+			printf("INFO: The blackhat mode not supported due to missing nested function support in clang.\n");
+			paxtest_mode = 0;
+#else
 			paxtest_mode = 1;
+#endif
 		}
 	}
 
@@ -53,6 +63,9 @@ int main( int argc, char *argv[] )
 	fflush( stdout );
 
 	if( fork() == 0 ) {
+#ifdef __clang__
+		doit();
+#else
 		/* Perform a dirty (but not unrealistic) trick to circumvent
 		 * the kernel protection.
 		 */
@@ -64,6 +77,7 @@ int main( int argc, char *argv[] )
 		} else {
 			doit();
 		}
+#endif
 	} else {
 		wait( &status );
 		if( WIFEXITED(status) == 0 ) {

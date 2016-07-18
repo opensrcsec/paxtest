@@ -5,6 +5,7 @@ linux32		32bit Linux
 linux64		64bit Linux
 
 openbsd		OpenBSD
+freebsd		FreeBSD
 
 clean		Clean up
 

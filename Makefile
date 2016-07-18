@@ -19,6 +19,9 @@ linux64:
 openbsd:
 	gmake -f Makefile.OpenBSD
 
+freebsd:
+	make -f Makefile.FreeBSD
+
 clean:
 	make -f Makefile.psm clean
 

@@ -50,7 +50,7 @@ or
 
 ./paxtest blackhat	(to run paxtest in blackhat mode)
 
-This will create a file paxtest.log in the current directory.
+This will create a file paxtest.log in the user's home directory.
 
 
 Kiddie and blackhat mode:
