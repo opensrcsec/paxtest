@@ -17,6 +17,9 @@ check_gcc = $(shell if $(CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1
 check_as = $(shell if $(CC) -Wa,$(1) -Wa,-Z -c -o /dev/null -xassembler /dev/null > /dev/null 2>&1; \
 	then echo "-Wa,$(1)"; fi)
 
+check_prog = $(shell if which "$1" >/dev/null 2>&1 ; \
+	then echo "$1"; else echo "$2"; fi)
+
 # stack protector has to be disabled for some tests
 CC_SSP := $(call check_gcc,-fno-stack-protector,)
 CC_SSP += $(call check_gcc,-fno-stack-protector-all,)
@@ -38,17 +41,6 @@ endif
 
 ifeq ($(LD_PIE),)
 LD_PIE = -shared
-endif
-
-# check for installed binaries
-CHPAXBIN := $(shell if which chpax >/dev/null 2>&1 ; then echo chpax; fi)
-PAXCTLBIN := $(shell if which paxctl >/dev/null 2>&1 ; then echo paxctl; fi)
-# should somehow use this to see if we really need paxctl
-# list=`paxctl -qQv /sbin/paxctl 2>/dev/null`; if echo $list | grep -q "PaX flags" ; then echo paxctl; fi
-# instead we use both markings to have paxtest running correctly on all platforms
-
-ifneq ($(PAXCTLBIN),)
-DUMMY := $(shell echo '${PAXCTLBIN} $$*' > paxbin)
 endif
 
 # for some reason the .c files need it, else GNU_STACK=RWE
@@ -88,26 +80,24 @@ UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getvdso getstack1 ge
 
 SHLIBS=	shlibtest.so shlibtest2.so
 
-ifeq ($(CHPAXBIN),)
+SETPAXFLAGS := $(SHELL) setpaxflags
+
+# check for installed binaries
+ifeq ($(call check_prog chpax),)
 CHPAXVER := 0.7
 CHPAX := chpax-$(CHPAXVER)
 CHPAXSRC := $(CHPAX)/aout.c $(CHPAX)/chpax.c $(CHPAX)/elf32.c $(CHPAX)/elf64.c $(CHPAX)/flags.c $(CHPAX)/io.c
-CHPAXBIN := ./chpax
 all: chpax $(SHLIBS) $(TESTS) $(UTILS) paxtest
 else
 all: $(SHLIBS) $(TESTS) $(UTILS) paxtest
 endif
 
-# we need the failure handling, for kernels not supporting EI_PAX
-DUMMY := $(shell echo '${CHPAXBIN} $$* >/dev/null 2>/dev/null ||:' >> paxbin; chmod +x paxbin)
-
-PAXBIN := ./paxbin
 DL := -ldl
 
 clean:
 	-rm -f *.o *.s *~ core
 	-rm -f $(TESTS) $(UTILS) $(SHLIBS)
-	-rm -f paxtest paxtest.log a.out dumpspecs paxbin
+	-rm -f paxtest paxtest.log a.out dumpspecs
 	-rm -f chpax-0.7/*.o
 	-rm -f chpax
 	
@@ -165,13 +155,11 @@ getheap1: getheap1.o
 
 getmain1: getmain1.o
 	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $<
-	-$(PAXBIN) -C $@
-	$(PAXBIN) -SPRXM $@
+	$(SETPAXFLAGS) SPRXM $@
 
 getshlibdelta1: getshlibdelta1.o
 	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $< $(DL)
-	-$(PAXBIN) -C $@
-	$(PAXBIN) -SPRXM $@
+	$(SETPAXFLAGS) SPRXM $@
 
 getheap2 getmain2: getheap2.o getmain2.o
 	$(CC) $(LDFLAGS) $(LD_PIE) -o $@ $@.o || (echo -e "#!/bin/sh\necho $@ pie not implemented" > $@; chmod +x $@)
@@ -187,35 +175,29 @@ getshlib: getshlib.o
 # Pax Team does not want "m" for getstack1/2
 getstack1: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	-$(PAXBIN) -C $@
-	$(PAXBIN) -SRpm $@
+	$(SETPAXFLAGS) SRpm $@
 
 getstack2: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $<
 	# disable segmexec, kernel else overrides pageexec
-	-$(PAXBIN) -C $@
-	$(PAXBIN) -PRsm $@
+	$(SETPAXFLAGS) PRsm $@
 
 getarg1: getarg.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	-$(PAXBIN) -C $@
-	$(PAXBIN) -SRpm $@
+	$(SETPAXFLAGS) SRpm $@
 
 getexhaust1: getexhaust1.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	-$(PAXBIN) -C $@
-	$(PAXBIN) -SRpm $@
+	$(SETPAXFLAGS) SRpm $@
 
 getexhaust2: getexhaust2.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	-$(PAXBIN) -C $@
-	$(PAXBIN) -SRpm $@
+	$(SETPAXFLAGS) SRpm $@
 
 getarg2: getarg.o
 	$(CC) $(LDFLAGS) -o $@ $<
 	# disable segmexec, kernel else overrides pageexec
-	-$(PAXBIN) -C $@
-	$(PAXBIN) -PRsm $@
+	$(SETPAXFLAGS) PRsm $@
 	
 $(MPROTSH_TESTS): body.o shlibtest.so
 	$(CC) $(CFLAGS) -o $@.o -c $@.c
@@ -234,8 +216,7 @@ $(RET_TESTS): retbody.o
 $(RETX_TESTS): retbody.o
 	$(CC) $(CFLAGS) $(CC_ETEXEC) -o $@.o -c $@.c
 	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $< $@.o $(PTHREAD)
-	-$(PAXBIN) -C $@
-	$(PAXBIN) -SPXM $@
+	$(SETPAXFLAGS) SPXM $@
 	
 # should also shlibbss.o and shlibdata.o be built w/ PIC?
 # if yes, remove tes from target and dependency

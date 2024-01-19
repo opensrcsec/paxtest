@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# Simple wrapper to set PaX in all possible supported ways.
+#
+# - minipli
+
+have_prog() {
+	which $1 >/dev/null 2>&1
+}
+
+cond_exec() {
+	if have_prog $1; then
+		$*
+		return $?
+	fi
+	return 1
+}
+
+if [ $# -ne 2 ]; then
+	echo >&2 "error: Need exacly two arguments"
+	echo >&2 "usage: $0 PAX_FLAGS FILE"
+	exit 1
+fi
+
+# set xattr flags
+cond_exec setfattr -n user.pax.flags -v "$1" "$2"
+
+# try creating a new header first, if it fails, try conversion
+cond_exec paxctl -C "-$1" "$2" || cond_exec paxctl -c "-$1" "$2"
+
+# try to use system chpax, fall back to the local one
+cond_exec chpax "-$1" "$2" || cond_exec ./chpax "-$1" "$2"
