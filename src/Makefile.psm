@@ -29,11 +29,11 @@ CC_TRAMPOLINES := $(call check_gcc,-ftrampolines,)
 
 CC_MSECURE_PLT := $(call check_gcc,-msecure-plt,)
 
-LD_PIE = $(shell $(LD) --help | grep -q pie && echo "-pie")
+LD_PIE := $(shell $(LD) --help | grep -q pie && echo "-pie")
 ifneq ($(LD_PIE),)
 # Gentoo (hardened specs enabled)
-CC_ETEXEC = $(shell grep -q "\!nopie" $(GCC_SPCS) && echo "-nopie")
-LD_ETEXEC = $(CC_ETEXEC)
+CC_ETEXEC := $(call check_gcc,-no-pie,$(call check_gcc,-nopie))
+LD_ETEXEC := $(CC_ETEXEC)
 endif
 
 ifeq ($(LD_PIE),)
