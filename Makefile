@@ -8,20 +8,20 @@ all:
 	@cat targets
 
 linux:
-	make -f Makefile.psm
+	$(MAKE) -f Makefile.psm
 
 linux32:
-	make -f Makefile.psm THEARCH=-m32
+	$(MAKE) -f Makefile.psm THEARCH=-m32
 
 linux64:
-	make -f Makefile.psm THEARCH=-m64
+	$(MAKE) -f Makefile.psm THEARCH=-m64
 
 openbsd:
 	gmake -f Makefile.OpenBSD
 
 freebsd:
-	make -f Makefile.FreeBSD
+	$(MAKE) -f Makefile.FreeBSD
 
 clean:
-	make -f Makefile.psm clean
+	$(MAKE) -f Makefile.psm clean
 
