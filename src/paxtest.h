@@ -16,10 +16,13 @@
 #define __aligned(x)	__attribute__((aligned(x)))
 #endif
 #define __pagealigned	__aligned(PAGE_SIZE_MAX)
-#define __use(x)	asm volatile ( "" : : "m" (x) );
+#define __use(x)	asm volatile ( "" : : "m" (x) )
+#define __hide(x)	asm volatile ( "" : "=rm"(x) : "0"(x) )
 
 static inline char *forced_strcpy(char *dst, const char *src)
 {
+	/* hide 'dst' to prevent compile time buffer overflow detection */
+	__hide(dst);
 	strcpy(dst, src);
 	/* ensure the compiler won't optimize the strcpy() away */
 	__use(dst);
@@ -28,6 +31,8 @@ static inline char *forced_strcpy(char *dst, const char *src)
 
 static inline void *forced_memcpy(void *dst, const void *src, size_t n)
 {
+	/* hide 'dst' to prevent compile time buffer overflow detection */
+	__hide(dst);
 	memcpy(dst, src, n);
 	/* ensure the compiler won't optimize the memcpy() away */
 	__use(dst);
