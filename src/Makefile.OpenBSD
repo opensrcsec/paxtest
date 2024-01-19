@@ -74,7 +74,7 @@ endif
 endif
 
 paxtest: $(TESTS) genpaxtest
-	sh genpaxtest $(CC) $(TESTS)
+	sh genpaxtest $(TESTS)
 
 anonmap: body.o anonmap.o
 

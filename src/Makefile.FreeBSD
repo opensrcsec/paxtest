@@ -119,7 +119,7 @@ rettofunc2x.o: rettofunc2x.c
 	${CC} ${CFLAGS} -fPIC -o ${.TARGET} -c ${.ALLSRC}
 
 paxtest: ${TESTS} genpaxtest
-	sh genpaxtest ${CC} ${TESTS}
+	sh genpaxtest ${TESTS}
 
 anonmap: body.o anonmap.o
 	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
