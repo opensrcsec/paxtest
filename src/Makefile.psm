@@ -81,7 +81,7 @@ UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getvdso getstack1 ge
 SHLIBS=	shlibtest.so shlibtest2.so
 
 CHPAXVER := 0.7
-CHPAXDIR := chpax-$(CHPAXVER)
+CHPAXDIR := ../contrib/chpax-$(CHPAXVER)
 SETPAXFLAGS := $(SHELL) setpaxflags
 
 # check for installed binaries
