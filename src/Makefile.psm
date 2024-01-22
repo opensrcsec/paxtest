@@ -17,9 +17,6 @@ check_gcc = $(shell if $(CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1
 check_as = $(shell if $(CC) -Wa,$(1) -Wa,-Z -c -o /dev/null -xassembler /dev/null > /dev/null 2>&1; \
 	then echo "-Wa,$(1)"; fi)
 
-check_prog = $(shell if which "$1" >/dev/null 2>&1 ; \
-	then echo "$1"; else echo "$2"; fi)
-
 # stack protector has to be disabled for some tests
 CC_SSP := $(call check_gcc,-fno-stack-protector,)
 CC_SSP += $(call check_gcc,-fno-stack-protector-all,)
@@ -80,25 +77,22 @@ UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getvdso getstack1 ge
 
 SHLIBS=	shlibtest.so shlibtest2.so
 
-CHPAXVER := 0.7
-CHPAXDIR := ../contrib/chpax-$(CHPAXVER)
-SETPAXFLAGS := $(SHELL) setpaxflags
+CONTRIBDIR := ../contrib
 
-# check for installed binaries
-ifeq ($(call check_prog chpax),)
-CONTRIB += $(CHPAXDIR)/chpax
-endif
+SETPAXFLAGS := $(CONTRIBDIR)/setpaxflags
 
 DL := -ldl
 
-all: $(CONTRIB) $(SHLIBS) $(TESTS) $(UTILS) paxtest
+all: $(SHLIBS) $(TESTS) $(UTILS) paxtest
+
+contrib:
+	cd $(CONTRIBDIR) && $(MAKE)
 
 clean:
+	-cd $(CONTRIBDIR) && $(MAKE) clean
 	-rm -f *.o *.s *~ core
 	-rm -f $(TESTS) $(UTILS) $(SHLIBS)
 	-rm -f paxtest paxtest.log a.out dumpspecs
-	-cd $(CHPAXDIR) && $(MAKE) fclean
-	-rm -f chpax
 	
 ifdef DESTDIR
 ifdef BINDIR
@@ -113,9 +107,7 @@ endif
 endif
 endif
 
-$(CHPAXDIR)/chpax:
-	cd $(CHPAXDIR) && $(MAKE)
-	ln -s $@
+$(TESTS) $(UTILS): | contrib
 
 paxtest: $(TESTS) genpaxtest
 	sh genpaxtest $(TESTS)
@@ -155,11 +147,11 @@ getheap1: getheap1.o
 
 getmain1: getmain1.o
 	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $<
-	$(SETPAXFLAGS) SPRXM $@
+	$(SHELL) $(SETPAXFLAGS) SPRXM $@
 
 getshlibdelta1: getshlibdelta1.o
 	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $< $(DL)
-	$(SETPAXFLAGS) SPRXM $@
+	$(SHELL) $(SETPAXFLAGS) SPRXM $@
 
 getheap2 getmain2: getheap2.o getmain2.o
 	$(CC) $(LDFLAGS) $(LD_PIE) -o $@ $@.o || (echo -e "#!/bin/sh\necho $@ pie not implemented" > $@; chmod +x $@)
@@ -175,29 +167,29 @@ getshlib: getshlib.o
 # Pax Team does not want "m" for getstack1/2
 getstack1: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	$(SETPAXFLAGS) SRpm $@
+	$(SHELL) $(SETPAXFLAGS) SRpm $@
 
 getstack2: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $<
 	# disable segmexec, kernel else overrides pageexec
-	$(SETPAXFLAGS) PRsm $@
+	$(SHELL) $(SETPAXFLAGS) PRsm $@
 
 getarg1: getarg.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	$(SETPAXFLAGS) SRpm $@
+	$(SHELL) $(SETPAXFLAGS) SRpm $@
 
 getexhaust1: getexhaust1.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	$(SETPAXFLAGS) SRpm $@
+	$(SHELL) $(SETPAXFLAGS) SRpm $@
 
 getexhaust2: getexhaust2.o
 	$(CC) $(LDFLAGS) -o $@ $<
-	$(SETPAXFLAGS) SRpm $@
+	$(SHELL) $(SETPAXFLAGS) SRpm $@
 
 getarg2: getarg.o
 	$(CC) $(LDFLAGS) -o $@ $<
 	# disable segmexec, kernel else overrides pageexec
-	$(SETPAXFLAGS) PRsm $@
+	$(SHELL) $(SETPAXFLAGS) PRsm $@
 	
 $(MPROTSH_TESTS): body.o shlibtest.so
 	$(CC) $(CFLAGS) -o $@.o -c $@.c
@@ -216,7 +208,7 @@ $(RET_TESTS): retbody.o
 $(RETX_TESTS): retbody.o
 	$(CC) $(CFLAGS) $(CC_ETEXEC) -o $@.o -c $@.c
 	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $< $@.o $(PTHREAD)
-	$(SETPAXFLAGS) SPXM $@
+	$(SHELL) $(SETPAXFLAGS) SPXM $@
 	
 # should also shlibbss.o and shlibdata.o be built w/ PIC?
 # if yes, remove tes from target and dependency
@@ -228,3 +220,5 @@ shlib%.so: shlib%.o
 
 $(SHLIB_TESTS): body.o $(SHLIBS) shlibbss.o shlibdata.o
 	$(CC) $(LDFLAGS) -o $@ body.o $@.o $(SHLIBS) $(DL) $(PTHREAD)
+
+.PHONY: all clean contrib install

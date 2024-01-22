@@ -29,4 +29,4 @@ cond_exec setfattr -n user.pax.flags -v "$1" "$2"
 cond_exec paxctl -C "-$1" "$2" || cond_exec paxctl -c "-$1" "$2"
 
 # try to use system chpax, fall back to the local one
-cond_exec chpax "-$1" "$2" || cond_exec ./chpax "-$1" "$2"
+cond_exec chpax "-$1" "$2" || cond_exec ${0%/*}/chpax "-$1" "$2"
