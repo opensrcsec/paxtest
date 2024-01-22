@@ -7,5 +7,6 @@ linux64		64bit Linux
 openbsd		OpenBSD
 freebsd		FreeBSD
 
-clean		Clean up
+docs		Build documentation
 
+clean		Clean up

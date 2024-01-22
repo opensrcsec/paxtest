@@ -46,7 +46,7 @@
   <refsynopsisdiv>
     <cmdsynopsis>
       <command>&dhpackage;</command>
-
+      <arg>kiddie|blackhat</arg>
       <arg><replaceable>logfile</replaceable></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
@@ -56,14 +56,14 @@
     <para><command>&dhpackage;</command> is a program that attempts to
     test kernel enforcements over memory usage. Some attacks benefit
     from kernels that do not impose limitations. For example, execution
-    in some memory segments makes buffer overflows possible. It is 
+    in some memory segments makes buffer overflows possible. It is
     used as a regression test suite for PaX, but might be useful
     to test other memory protection patches for the kernel.</para>
 
     <para><command>&dhpackage;</command> runs a set of programs that
     attempt to subvert memory usage. For example:
     </para>
-    
+
     <literallayout>
 Executable anonymous mapping             : Killed
 Executable bss                           : Killed
@@ -92,35 +92,32 @@ Executable shared library bss            : Killed
 Executable shared library data           : Killed
 Writable text segments                   : Killed
     </literallayout>
-    
-    <para>The <quote>Executable ...</quote> tests basically put an instruction 
+
+    <para>The <quote>Executable ...</quote> tests basically put an instruction
     in a place
     that is supposed to be data (i.e. malloced data, C variable, etc.)
     and tries to execute it. The <quote>(mprotect)</quote> tests try to trick
     the kernel in marking this piece of memory as executable first.
-    Return to function tests overwrite the return address on the stack, 
-    these are hard to prevent from inside the kernel.  
+    Return to function tests overwrite the return address on the stack,
+    these are hard to prevent from inside the kernel.
     The last test tries to overwrite memory which is marked as executable.
     </para>
 
     <para>A normal Linux kernel (unpatched to protect for buffer overflows)
     will show all tests as Vulnerable and no stack
-    randomisation or 6 bits (due to stack colouring). In other words, 
-    on a normal Linux kernel you can execute any data inside a process's 
+    randomisation or 6 bits (due to stack colouring). In other words,
+    on a normal Linux kernel you can execute any data inside a process's
     memory or overwrite any code at will.
     </para>
-
-    <para>This manual page was written for the &debian; distribution
-      because the original program does not have a manual page.
-    </para>
-
 
   </refsect1>
   <refsect1>
     <title>OPTIONS</title>
 
-    <para>This program takes only a single option: a file to which
-      log all the test results (by default it will log to stdin/stdout)
+    <para>This program takes two options: a required <option>mode</option> and
+    an optional <option>logfile</option> to which log all the test results (by
+    default it will log to stdout/stderr and
+    <filename>$HOME/paxtest.log</filename>).
     </para>
   </refsect1>
   <refsect1>
@@ -132,7 +129,7 @@ Writable text segments                   : Killed
   </refsect1>
   <refsect1>
     <title>AUTHOR</title>
-  
+
     <para>&dhpackage; was written by Peter Busser.</para>
 
     <para>This manual page was written by &dhusername; &dhemail; for
@@ -140,7 +137,7 @@ Writable text segments                   : Killed
       information in the source code and Peter Busser's comments
       sent to public mailing lists.  Permission is
       granted to copy, distribute and/or modify this document under
-      the terms of the <acronym>GNU</acronym> Public License, Version 2 
+      the terms of the <acronym>GNU</acronym> Public License, Version 2
       or any later version published by the Free
       Software Foundation.</para>
 

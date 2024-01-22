@@ -22,5 +22,9 @@ openbsd:
 freebsd:
 	cd src && $(MAKE) -f Makefile.FreeBSD
 
+docs:
+	cd doc && $(MAKE)
+
 clean:
 	cd src && $(MAKE) -f Makefile.psm clean
+	cd doc && $(MAKE) clean clean
