@@ -80,25 +80,24 @@ UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getvdso getstack1 ge
 
 SHLIBS=	shlibtest.so shlibtest2.so
 
+CHPAXVER := 0.7
+CHPAXDIR := chpax-$(CHPAXVER)
 SETPAXFLAGS := $(SHELL) setpaxflags
 
 # check for installed binaries
 ifeq ($(call check_prog chpax),)
-CHPAXVER := 0.7
-CHPAX := chpax-$(CHPAXVER)
-CHPAXSRC := $(CHPAX)/aout.c $(CHPAX)/chpax.c $(CHPAX)/elf32.c $(CHPAX)/elf64.c $(CHPAX)/flags.c $(CHPAX)/io.c
-all: chpax $(SHLIBS) $(TESTS) $(UTILS) paxtest
-else
-all: $(SHLIBS) $(TESTS) $(UTILS) paxtest
+CONTRIB += $(CHPAXDIR)/chpax
 endif
 
 DL := -ldl
+
+all: $(CONTRIB) $(SHLIBS) $(TESTS) $(UTILS) paxtest
 
 clean:
 	-rm -f *.o *.s *~ core
 	-rm -f $(TESTS) $(UTILS) $(SHLIBS)
 	-rm -f paxtest paxtest.log a.out dumpspecs
-	-rm -f chpax-0.7/*.o
+	-cd $(CHPAXDIR) && $(MAKE) fclean
 	-rm -f chpax
 	
 ifdef DESTDIR
@@ -114,8 +113,9 @@ endif
 endif
 endif
 
-chpax: $(CHPAXSRC:.c=.o)
-	$(CC) $(LDFLAGS) -o $@ $^
+$(CHPAXDIR)/chpax:
+	cd $(CHPAXDIR) && $(MAKE)
+	ln -s $@
 
 paxtest: $(TESTS) genpaxtest
 	sh genpaxtest $(TESTS)
