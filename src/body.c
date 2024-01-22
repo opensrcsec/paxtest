@@ -73,11 +73,19 @@ int main( int argc, char *argv[] )
 			pthread_t thread;
 			pthread_create(&thread, NULL, test_thread, dummy);
 			doit();
-			pthread_kill(thread, SIGTERM);
+			if( pthread_cancel(thread) != 0 )
+				pthread_kill(thread, SIGTERM);
+			pthread_join(thread, NULL);
 		} else {
 			doit();
 		}
 #endif
+		/* doit(), if successful, shouldn't return. Getting here means,
+		 * it failed for some reason, most likely because the compiler
+		 * optimized our exploit attempts away. Warn, if this happens.
+		 */
+		printf( "Unexpected return of doit()!\n" );
+		exit( 42 );
 	} else {
 		wait( &status );
 		if( WIFEXITED(status) == 0 ) {
