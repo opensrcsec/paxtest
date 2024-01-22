@@ -92,7 +92,7 @@ clean:
 	-cd $(CONTRIBDIR) && $(MAKE) clean
 	-rm -f *.o *.s *~ core
 	-rm -f $(TESTS) $(UTILS) $(SHLIBS)
-	-rm -f paxtest paxtest.log a.out dumpspecs
+	-rm -f ../paxtest paxtest paxtest.log a.out dumpspecs
 	
 ifdef DESTDIR
 ifdef BINDIR
@@ -110,7 +110,9 @@ endif
 $(TESTS) $(UTILS): | contrib
 
 paxtest: $(TESTS) genpaxtest
-	sh genpaxtest $(TESTS)
+	$(SHELL) genpaxtest $(TESTS)
+	ln -sf src/paxtest.wrap ../$@
+	chmod 755 ../$@
 
 .S.o:
 	$(CC) $(CFLAGS) $(CC_PIE) $(ASFLAGS) -o $@ -c $<
