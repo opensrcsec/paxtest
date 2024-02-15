@@ -7,9 +7,7 @@
 
 #include "paxtest.h"
 
-#define ALIGN	(2 * 1024 * 1024)
-
-int dummy_pad1(void) __aligned(ALIGN);
+int dummy_pad1(void) __aligned(HUGE_PAGE_SIZE);
 int dummy_pad1(void)
 {
 	return 0;
@@ -21,7 +19,7 @@ void big_nop(void)
 	return;
 }
 
-int dummy_pad2(void) __aligned(ALIGN);
+int dummy_pad2(void) __aligned(HUGE_PAGE_SIZE);
 int dummy_pad2(void)
 {
 	return 0;

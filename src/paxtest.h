@@ -12,6 +12,7 @@
 #else
 #define PAGE_SIZE_MAX	0x10000	/* 64k should cover most arches */
 #endif
+#define HUGE_PAGE_SIZE	(2UL * 1024 * 1024)
 #ifndef __aligned
 #define __aligned(x)	__attribute__((aligned(x)))
 #endif

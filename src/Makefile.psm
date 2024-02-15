@@ -45,9 +45,9 @@ EXEC_TESTS    := anonmap execbss execdata execheap execstack
 MPROT_TESTS   := mprotanon mprotbss mprotdata mprotheap mprotstack
 MPROTSH_TESTS := mprotshbss mprotshdata writetext
 SHLIB_TESTS   := shlibbss shlibdata
-RAND_TESTS    := randamap randheap1 randheap2 randmain1 randmain2
-RAND_TESTS    += randshlib randshlibbig randvdso randstack1 randstack2
-RAND_TESTS    += randarg1 randarg2 randshlibdelta1 randshlibdelta2
+RAND_TESTS    := randamap randamapbig randheap1 randheap2 randmain1 randmain2
+RAND_TESTS    += randfmap randfmapbig randshlib randshlibbig randvdso randstack1
+RAND_TESTS    += randstack2 randarg1 randarg2 randshlibdelta1 randshlibdelta2
 RANDEX_TESTS  := randexhaust1 randexhaust2
 RET_TESTS     := rettofunc1 rettofunc2
 RETX_TESTS    := rettofunc1x rettofunc2x
@@ -57,8 +57,9 @@ TESTS += $(RAND_TESTS) $(RANDEX_TESTS) $(RET_TESTS) $(RETX_TESTS)
 
 UTILS_SHLIB := getshlib getshlibbig getshlibdelta1 getshlibdelta2
 
-UTILS := getamap getarg1 getarg2 getexhaust1 getexhaust2 getheap1 getheap2
-UTILS += getmain1 getmain2 getstack1 getstack2 getvdso $(UTILS_SHLIB)
+UTILS := getamap getamapbig getarg1 getarg2 getexhaust1 getexhaust2
+UTILS += getfmap getfmapbig  getheap1 getheap2 getmain1 getmain2
+UTILS += getstack1 getstack2 getvdso $(UTILS_SHLIB)
 
 SHLIBS := shlibtest.so shlibtest2.so shlibtestbig.so
 

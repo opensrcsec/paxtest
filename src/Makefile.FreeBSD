@@ -44,10 +44,13 @@ MPROTSH_TESTS=	\
 
 RAND_TESTS=	\
 	randamap \
+	randamapbig \
 	randheap1 \
 	randheap2 \
 	randmain1 \
 	randmain2 \
+	randfmap \
+	randfmapbig \
 	randshlib \
 	randshlibbig \
 	randvdso \
@@ -79,6 +82,9 @@ TESTS:= \
        ${RETX_TESTS}
 
 UTILS=	getamap \
+	getamapbig \
+	getfmap \
+	getfmapbig \
 	getheap1 \
 	getheap2 \
 	getmain1 \
@@ -151,6 +157,15 @@ getheap.o: getheap.c
 getamap.o: getamap.c
 	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
+getamapbig.o: getamapbig.c
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+getfmap.o: getfmap.c
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+getfmapbig.o: getfmapbig.c
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
 getmain1: getmain.o
 	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
@@ -204,6 +219,15 @@ mprotstack: body.o mprotstack.o
 	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
 randamap: randbody.o randamap.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randamapbig: randbody.o randamapbig.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randfmap: randbody.o randfmap.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randfmapbig: randbody.o randfmapbig.o
 	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
 randarg1: randbody.o randarg1.o

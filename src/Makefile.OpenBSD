@@ -24,8 +24,11 @@ TESTS=	anonmap \
 	mprotshdata \
 	mprotstack \
 	randamap \
+	randamapbig \
 	randheap1 \
 	randmain1 \
+	randfmap \
+	randfmapbig \
 	randshlib \
 	randshlibbig \
 	randstack1 \
@@ -41,6 +44,9 @@ TESTS=	anonmap \
 	writetext
 
 UTILS=	getamap \
+	getamapbig \
+	getfmap \
+	getfmapbig \
 	getheap1 \
 	getheap2 \
 	getmain1 \
@@ -100,6 +106,12 @@ getheap.o: getheap.c
 
 getamap.o: getamap.c
 
+getamapbig.o: getamapbig.c
+
+getfmap.o: getfmap.c
+
+getfmapbig.o: getfmapbig.c
+
 getmain1: getmain.o
 	$(CC) $(LDFLAGS) -o $@ $+
 
@@ -144,6 +156,12 @@ mprotshdata: body.o mprotshdata.o shlibtest.so
 mprotstack: body.o mprotstack.o
 
 randamap: randbody.o randamap.o
+
+randamapbig: randbody.o randamapbig.o
+
+randfmap: randbody.o randfmap.o
+
+randfmapbig: randbody.o randfmapbig.o
 
 randheap1: randbody.o randheap1.o
 
