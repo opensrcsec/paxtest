@@ -1,3 +1,20 @@
+paxtest (unreleased) stable; urgency=low
+  * Fixed parallel builds
+  * Fix detection of -nopie/-no-pie which lead to broken ET_EXEC tests
+  * Prevent the compiler from detecting buffer overflows at compile time and
+    making use of the implied UB to drop all the code, again, leading to false
+    test results
+  * Removed erroneous $(CC) from the list of tests to run
+  * Restructured directory layout
+  * Update manpage to mention the mandatory 'mode' argument
+  * Remove debian/ subdirectory
+  * Added more ASLR test (see https://zolutal.github.io/aslrnt/)
+  * Makefile.psm cleanup and simplification
+  * Substitute 'THEARCH' optional variable for more specific ones, namely
+    CPPFLAGS_EXTRA, CFLAGS_EXTRA and LDFLAGS_EXTRA
+  * Disable CET for tests to avoid false positives
+  * Run SEGMEXEC tests only on 32 bit x86 systems
+
 paxtest (0.9.15-1) stable; urgency=low
   * Change default location of logfile & add info to log file,
     from Javier Fernandez-Sanguino (jfs@debian.org)
