@@ -1,5 +1,8 @@
 #!/usr/bin/make
 
+# less noise
+MAKEFLAGS += --no-print-directory
+
 CC ?= gcc
 
 check_gcc = $(shell if $(CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; \
