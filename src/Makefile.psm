@@ -29,6 +29,7 @@ CPPFLAGS  := -U_FORTIFY_SOURCE -DRUNDIR=\"$(RUNDIR)\"
 CFLAGS    := -O2
 CFLAGS    += $(call check_gcc,-fno-stack-protector,)
 CFLAGS    += $(call check_gcc,-fno-stack-protector-all,)
+CFLAGS    += $(call check_gcc,-fcf-protection=none,)
 CFLAGS    += $(call check_gcc,-ftrampolines,)
 LDFLAGS   :=
 
