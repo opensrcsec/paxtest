@@ -26,7 +26,7 @@ SETPAXFLAGS := $(CONTRIBDIR)/setpaxflags
 # The Hardened GCC compiler has stack protector on by default, this
 # could interfere with the results of this test.
 CPPFLAGS  := -U_FORTIFY_SOURCE -DRUNDIR=\"$(RUNDIR)\"
-CFLAGS    := -O2
+CFLAGS    := -O2 -g
 CFLAGS    += $(call check_gcc,-fno-stack-protector,)
 CFLAGS    += $(call check_gcc,-fno-stack-protector-all,)
 CFLAGS    += $(call check_gcc,-fcf-protection=none,)
