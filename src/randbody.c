@@ -12,6 +12,12 @@
 extern const char testname[];
 extern const char testprog[];
 
+int skip_test(void) __attribute__((weak));
+int skip_test(void)
+{
+	return 0;
+}
+
 int main( int argc, char *argv[] )
 {
 	FILE *fp;
@@ -28,6 +34,11 @@ int main( int argc, char *argv[] )
 
 	printf( "%s: ", testname );
 	fflush(NULL);
+
+	if( skip_test() ) {
+		printf( "Skipped, not applicable\n" );
+		exit( 0 );
+	}
 
 	and = ~0L;
 	or = 0L;

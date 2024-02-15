@@ -10,3 +10,10 @@
 
 const char testname[] = "Stack randomization test (SEGMEXEC)      ";
 const char testprog[] = RUNDIR"/getstack1";
+
+#ifndef __i386__
+int skip_test(void)
+{
+	return 1;
+}
+#endif
