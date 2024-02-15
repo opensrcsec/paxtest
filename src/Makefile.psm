@@ -1,99 +1,97 @@
 #!/usr/bin/make
 
-# tested with make-3.79.1/gcc-2.96 (shared) and make-3.80/gcc-3.3.2/3 (pie)
-# make-3.79.1 does not support $$@ as target requirement (works for make-3.80)
-
-# preliminaries:
-# Gentoo modifies the specs adding pie/nopie to enable/disable ET_DYN binaries
-
-CC := gcc
-LD := ld
-CC_PIC := -fPIC
-GCC_SPCS := $(shell $(CC) -print-file-name=${GCC_SPECS:-specs})
+CC ?= gcc
 
 check_gcc = $(shell if $(CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; \
 	then echo "$(1)"; else echo "$(2)"; fi)
 
-check_as = $(shell if $(CC) -Wa,$(1) -Wa,-Z -c -o /dev/null -xassembler /dev/null > /dev/null 2>&1; \
-	then echo "-Wa,$(1)"; fi)
+# PIC, for shared libraries
+CC_PIC := -fPIC
+LD_PIC := -shared
 
-# stack protector has to be disabled for some tests
-CC_SSP := $(call check_gcc,-fno-stack-protector,)
-CC_SSP += $(call check_gcc,-fno-stack-protector-all,)
+# forcibly enable PIE
+CC_PIE := -fPIE
+LD_PIE := -pie
 
-ASFLAGS := $(call check_as,--noexecstack)
+# forcibly disable PIE
+CC_EXEC := -fno-PIE
+LD_EXEC := $(call check_gcc,-no-pie,$(call check_gcc,-nopie))
 
-CC_PIE := $(call check_gcc,-fPIE,-fPIC)
-
-CC_TRAMPOLINES := $(call check_gcc,-ftrampolines,)
-
-CC_MSECURE_PLT := $(call check_gcc,-msecure-plt,)
-
-LD_PIE := $(shell $(LD) --help | grep -q pie && echo "-pie")
-ifneq ($(LD_PIE),)
-# Gentoo (hardened specs enabled)
-CC_ETEXEC := $(call check_gcc,-no-pie,$(call check_gcc,-nopie))
-LD_ETEXEC := $(CC_ETEXEC)
-endif
-
-ifeq ($(LD_PIE),)
-LD_PIE = -shared
-endif
-
-# for some reason the .c files need it, else GNU_STACK=RWE
-OPT_FLAGS  := -O2 $(ASFLAGS)
-PTHREAD := -lpthread
-# define stripping of binaries/libs here, or set these on make's commandline,
-# else you'll loose the chpax flags!
-LDFLAGS :=
-SHLDFLAGS :=
-ifndef RUNDIR
-RUNDIR := .
-endif
-
-# The Hardened GCC compiler has stack protector on by default, this
-# could interfere with the results of this test.
-
-CFLAGS	:= $(OPT_FLAGS) -U_FORTIFY_SOURCE -DRUNDIR=\"${RUNDIR}\" $(CC_SSP) $(CC_TRAMPOLINES)
-
-ifneq ($(THEARCH),)
-CFLAGS += $(THEARCH)
-LDFLAGS += $(THEARCH)
-SHLDFLAGS += $(THEARCH)
-endif
-
-EXEC_TESTS = anonmap execbss execdata execheap execstack
-MPROT_TESTS = mprotanon mprotbss mprotdata mprotheap mprotstack
-SHLIB_TESTS = shlibbss shlibdata
-MPROTSH_TESTS = mprotshbss mprotshdata writetext
-RAND_TESTS = randamap randheap1 randheap2 randmain1 randmain2 randshlib randvdso randstack1 randstack2 randarg1 randarg2 randshlibdelta1 randshlibdelta2
-FAST_RAND_TESTS = randexhaust1 randexhaust2
-RET_TESTS = rettofunc1 rettofunc2
-RETX_TESTS = rettofunc1x rettofunc2x
-
-TESTS = $(EXEC_TESTS) $(SHLIB_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS) $(RAND_TESTS) $(FAST_RAND_TESTS) $(RET_TESTS) $(RETX_TESTS)
-
-UTILS=	getamap getheap1 getheap2 getmain1 getmain2 getshlib getvdso getstack1 getstack2 getarg1 getarg2 getexhaust1 getexhaust2 getshlibdelta1 getshlibdelta2
-
-SHLIBS=	shlibtest.so shlibtest2.so
+RUNDIR ?= .
 
 CONTRIBDIR := ../contrib
 
 SETPAXFLAGS := $(CONTRIBDIR)/setpaxflags
 
-DL := -ldl
+# The Hardened GCC compiler has stack protector on by default, this
+# could interfere with the results of this test.
+CPPFLAGS  := -U_FORTIFY_SOURCE -DRUNDIR=\"$(RUNDIR)\"
+CFLAGS    := -O2
+CFLAGS    += $(call check_gcc,-fno-stack-protector,)
+CFLAGS    += $(call check_gcc,-fno-stack-protector-all,)
+CFLAGS    += $(call check_gcc,-ftrampolines,)
+LDFLAGS   :=
+
+# append optional user provided flags
+CPPFLAGS  += $(CPPFLAGS_EXTRA)
+CFLAGS    += $(CFLAGS_EXTRA)
+LDFLAGS   += $(LDFLAGS_EXTRA)
+
+EXEC_TESTS    := anonmap execbss execdata execheap execstack
+MPROT_TESTS   := mprotanon mprotbss mprotdata mprotheap mprotstack
+MPROTSH_TESTS := mprotshbss mprotshdata writetext
+SHLIB_TESTS   := shlibbss shlibdata
+RAND_TESTS    := randamap randheap1 randheap2 randmain1 randmain2
+RAND_TESTS    += randshlib randvdso randstack1 randstack2
+RAND_TESTS    += randarg1 randarg2 randshlibdelta1 randshlibdelta2
+RANDEX_TESTS  := randexhaust1 randexhaust2
+RET_TESTS     := rettofunc1 rettofunc2
+RETX_TESTS    := rettofunc1x rettofunc2x
+
+TESTS := $(EXEC_TESTS) $(SHLIB_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS)
+TESTS += $(RAND_TESTS) $(RANDEX_TESTS) $(RET_TESTS) $(RETX_TESTS)
+
+UTILS_SHLIB := getshlib getshlibdelta1 getshlibdelta2
+
+UTILS := getamap getarg1 getarg2 getexhaust1 getexhaust2 getheap1 getheap2
+UTILS += getmain1 getmain2 getstack1 getstack2 getvdso $(UTILS_SHLIB)
+
+SHLIBS := shlibtest.so shlibtest2.so
+
+PTHREAD_TARGETS := $(EXEC_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS)
+PTHREAD_TARGETS += $(SHLIB_TESTS) $(RET_TESTS) $(RETX_TESTS)
+DLOPEN_TARGETS  := $(MPROTSH_TESTS) $(SHLIB_TESTS) $(UTILS_SHLIB)
+SHLIB_TARGETS   := $(SHLIBS)
+
+# build these as executables, overriding a possible default-pie
+ET_EXEC_TARGETS := getheap1 getmain1 getshlibdelta1
+# (recommended by PaX Team, not really a requirement)
+ET_EXEC_TARGETS += $(RET_TESTS) $(RETX_TESTS)
+# ensure these are build as PIE
+ET_DYN_TARGETS  := getheap2 getmain2 getshlibdelta2
+
+PAX_TARGETS_SPRXM := getmain1 getshlibdelta1
+PAX_TARGETS_SPXM  := $(RETX_TESTS)
+# ET_EXEC and usage of "m" is not confirmed (as in Gentoo patch)
+# Adamantix does not use it
+# Pax Team does not want "m" for getstack1/2
+PAX_TARGETS_SRpm := getarg1 getstack1 getexhaust1 getexhaust2
+# disable segmexec, kernel else overrides pageexec
+PAX_TARGETS_PRsm := getarg2 getstack2
+
 
 all: $(SHLIBS) $(TESTS) $(UTILS) paxtest
+	$(MAKE) -f $(firstword $(MAKEFILE_LIST)) apply_pax_flags
 
 contrib:
-	cd $(CONTRIBDIR) && $(MAKE)
+	$(MAKE) -C $(CONTRIBDIR)
 
 clean:
-	-cd $(CONTRIBDIR) && $(MAKE) clean
+	-$(MAKE) -C $(CONTRIBDIR) clean
 	-rm -f *.o *.s *~ core
 	-rm -f $(TESTS) $(UTILS) $(SHLIBS)
 	-rm -f ../paxtest paxtest paxtest.log a.out dumpspecs
-	
+
 ifdef DESTDIR
 ifdef BINDIR
 ifdef RUNDIR
@@ -107,120 +105,49 @@ endif
 endif
 endif
 
-$(TESTS) $(UTILS): | contrib
-
-paxtest: $(TESTS) genpaxtest
+paxtest: genpaxtest $(TESTS)
 	$(SHELL) genpaxtest $(TESTS)
 	ln -sf src/paxtest.wrap ../$@
 	chmod 755 ../$@
 
-.S.o:
-	$(CC) $(CFLAGS) $(CC_PIE) $(ASFLAGS) -o $@ -c $<
-.c.o:
-	$(CC) $(CFLAGS) -o $@ -c $<
+apply_pax_flags: $(PAX_TARGETS_SPRXM) $(PAX_TARGETS_SPXM)
+apply_pax_flags: $(PAX_TARGETS_SRpm) $(PAX_TARGETS_PRsm)
+apply_pax_flags: | contrib
+	@for p in $(PAX_TARGETS_SPRXM); do \
+		$(SHELL) $(SETPAXFLAGS) SPRXM $$p; \
+	done
+	@for p in $(PAX_TARGETS_SPXM); do \
+		$(SHELL) $(SETPAXFLAGS) SPXM $$p; \
+	done
+	@for p in $(PAX_TARGETS_SRpm); do \
+		$(SHELL) $(SETPAXFLAGS) SRpm $$p; \
+	done
+	@for p in $(PAX_TARGETS_PRsm); do \
+		$(SHELL) $(SETPAXFLAGS) PRsm $$p; \
+	done
 
-$(EXEC_TESTS) $(MPROT_TESTS): body.o
-	$(CC) $(CFLAGS) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) -o $@ $< $@.o $(PTHREAD)
-	
-$(RAND_TESTS): randbody.o
-	$(CC) $(CFLAGS) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) -o $@ $< $@.o
+$(ET_DYN_TARGETS): CFLAGS  += $(CC_PIE)
+$(ET_DYN_TARGETS): LDFLAGS += $(LD_PIE)
+$(ET_EXEC_TARGETS): CFLAGS  += $(CC_EXEC)
+$(ET_EXEC_TARGETS): LDFLAGS += $(LD_EXEC)
+$(SHLIB_TARGETS): CFLAGS  += $(CC_PIC)
+$(SHLIB_TARGETS): LDFLAGS += $(LD_PIC)
+$(PTHREAD_TARGETS): CFLAGS += -pthread
+$(PTHREAD_TARGETS): LDLIBS += -lpthread
+$(DLOPEN_TARGETS): LDLIBS += -ldl
 
-$(FAST_RAND_TESTS): fastrandbody.o
-	$(CC) $(CFLAGS) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) -o $@ $< $@.o
+$(EXEC_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS): body.c
+$(SHLIB_TESTS) $(RET_TESTS) $(RETX_TESTS): body.c
+$(RAND_TESTS): randbody.c
+$(RANDEX_TESTS): fastrandbody.c
 
-getamap: getamap.o
-	$(CC) $(LDFLAGS) -o $@ $@.o
-	
-# get heap1/main1 are built w/o PIC
-get%1.o: get%.c
-	$(CC) $(CFLAGS) $(CC_ETEXEC) -o $@ -c $<
+%1.c: %.c
+	ln -s $< $@
 
-# get heap2/main2 are built w/ PIC
-get%2.o: get%.c
-	$(CC) $(CFLAGS) $(CC_PIE) -o $@ -c $<
-	
-# Adamantix uses the PIC version (getheap2.o), not necessary for ET_EXEC
-# build as ET_EXEC (not in Adamantix's Makefile)
-getheap1: getheap1.o
-	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $<
+%2.c: %.c
+	ln -s $< $@
 
-getmain1: getmain1.o
-	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $<
-	$(SHELL) $(SETPAXFLAGS) SPRXM $@
+%.so: %.o
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-getshlibdelta1: getshlibdelta1.o
-	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $< $(DL)
-	$(SHELL) $(SETPAXFLAGS) SPRXM $@
-
-getheap2 getmain2: getheap2.o getmain2.o
-	$(CC) $(LDFLAGS) $(LD_PIE) -o $@ $@.o || (echo -e "#!/bin/sh\necho $@ pie not implemented" > $@; chmod +x $@)
-
-getshlibdelta2: getshlibdelta2.o
-	$(CC) $(LDFLAGS) $(LD_PIE) -o $@ $@.o $(DL) || (echo -e "#!/bin/sh\necho $@ pie not implemented" > $@; chmod +x $@)
-
-getshlib: getshlib.o
-	$(CC) $(LDFLAGS) -o $@ $< $(DL)
-
-# ET_EXEC and usage of "m" is not confirmed (as in Gentoo patch)
-# Adamantix does not use it
-# Pax Team does not want "m" for getstack1/2
-getstack1: getstack.o
-	$(CC) $(LDFLAGS) -o $@ $<
-	$(SHELL) $(SETPAXFLAGS) SRpm $@
-
-getstack2: getstack.o
-	$(CC) $(LDFLAGS) -o $@ $<
-	# disable segmexec, kernel else overrides pageexec
-	$(SHELL) $(SETPAXFLAGS) PRsm $@
-
-getarg1: getarg.o
-	$(CC) $(LDFLAGS) -o $@ $<
-	$(SHELL) $(SETPAXFLAGS) SRpm $@
-
-getexhaust1: getexhaust1.o
-	$(CC) $(LDFLAGS) -o $@ $<
-	$(SHELL) $(SETPAXFLAGS) SRpm $@
-
-getexhaust2: getexhaust2.o
-	$(CC) $(LDFLAGS) -o $@ $<
-	$(SHELL) $(SETPAXFLAGS) SRpm $@
-
-getarg2: getarg.o
-	$(CC) $(LDFLAGS) -o $@ $<
-	# disable segmexec, kernel else overrides pageexec
-	$(SHELL) $(SETPAXFLAGS) PRsm $@
-	
-$(MPROTSH_TESTS): body.o
-	$(CC) $(CFLAGS) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) -o $@ $@.o $^ $(DL) $(PTHREAD)
-
-# used for RANDEXEC'd binaries
-retbody.o: body.c
-	$(CC) $(CFLAGS) $(CC_ETEXEC) -o $@ -c $<
-
-# build as ET_EXEC (recommended by PaX Team, not really a requirement)
-$(RET_TESTS): retbody.o
-	$(CC) $(CFLAGS) $(CC_ETEXEC) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $< $@.o $(PTHREAD)
-
-# build as ET_EXEC (not in Adamantix's Makefile)
-$(RETX_TESTS): retbody.o
-	$(CC) $(CFLAGS) $(CC_ETEXEC) -o $@.o -c $@.c
-	$(CC) $(LDFLAGS) $(LD_ETEXEC) -o $@ $< $@.o $(PTHREAD)
-	$(SHELL) $(SETPAXFLAGS) SPXM $@
-	
-# should also shlibbss.o and shlibdata.o be built w/ PIC?
-# if yes, remove tes from target and dependency
-shlibtes%.o: shlibtes%.c
-	$(CC) $(CFLAGS) $(CC_PIC) -o $@ -c $<
-
-shlib%.so: shlib%.o
-	$(CC) $(SHLDFLAGS) -shared -o $@ $<
-
-$(SHLIB_TESTS): body.o $(SHLIBS) shlibbss.o shlibdata.o
-	$(CC) $(LDFLAGS) -o $@ body.o $@.o $(SHLIBS) $(DL) $(PTHREAD)
-
-.PHONY: all clean contrib install
+.PHONY: all apply_pax_flags clean contrib install
