@@ -49,6 +49,7 @@ RAND_TESTS=	\
 	randmain1 \
 	randmain2 \
 	randshlib \
+	randshlibbig \
 	randvdso \
 	randstack1 \
 	randstack2 \
@@ -83,6 +84,7 @@ UTILS=	getamap \
 	getmain1 \
 	getmain2 \
 	getshlib \
+	getshlibbig \
 	getvdso \
 	getstack1 \
 	getstack2 \
@@ -92,7 +94,8 @@ UTILS=	getamap \
 	getexhaust2
 
 SHLIBS=	shlibtest.so \
-	shlibtest2.so
+	shlibtest2.so \
+	shlibtestbig.so
 
 all: ${SHLIBS} ${TESTS} ${UTILS} paxtest
 
@@ -158,6 +161,9 @@ getmain2.o: getmain.c
 	${CC} ${CFLAGS} -fPIC -o ${.TARGET} -c ${.ALLSRC}
 
 getshlib: getshlib.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+getshlibbig: getshlibbig.o
 	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
 getstack1: getstack.o
@@ -227,6 +233,9 @@ randmain2: randbody.o randmain2.o
 randshlib: randbody.o randshlib.o
 	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
+randshlibbig: randbody.o randshlibbig.o
+	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
 randstack1: randbody.o randstack1.o
 	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
@@ -254,10 +263,16 @@ shlibtest.o: shlibtest.c
 shlibtest2.o: shlibtest2.c
 	${CC} ${CFLAGS} -fPIC -c ${.IMPSRC} -o ${.TARGET}
 
+shlibtestbig.o: shlibtestbig.c
+	${CC} ${CFLAGS} -fPIC -c ${.IMPSRC} -o ${.TARGET}
+
 shlibtest.so: shlibtest.o
 	${CC} ${SHLDFLAGS} -shared -o ${.TARGET} ${.ALLSRC}
 
 shlibtest2.so: shlibtest2.o
+	${CC} ${SHLDFLAGS} -shared -o ${.TARGET} ${.ALLSRC}
+
+shlibtestbig.so.so: shlibtestbig.o
 	${CC} ${SHLDFLAGS} -shared -o ${.TARGET} ${.ALLSRC}
 
 shlibbss: body.o shlibbss.o shlibtest.so shlibtest2.so

@@ -27,6 +27,7 @@ TESTS=	anonmap \
 	randheap1 \
 	randmain1 \
 	randshlib \
+	randshlibbig \
 	randstack1 \
 	randstack2 \
 	randarg1 \
@@ -45,13 +46,15 @@ UTILS=	getamap \
 	getmain1 \
 	getmain2 \
 	getshlib \
+	getshlibbig \
 	getstack1 \
 	getstack2 \
 	getarg1 \
 	getarg2
 
 SHLIBS=	shlibtest.so \
-	shlibtest2.so
+	shlibtest2.so \
+	shlibtestbig.so
 
 all: $(SHLIBS) $(TESTS) $(UTILS) paxtest
 
@@ -108,6 +111,8 @@ getmain2.o: getmain.c
 
 getshlib: getshlib.o
 
+getshlibbig: getshlibbig.o
+
 getstack1: getstack.o
 	$(CC) $(LDFLAGS) -o $@ $+
 
@@ -150,6 +155,8 @@ randmain2: randbody.o randmain2.o
 
 randshlib: randbody.o randshlib.o
 
+randshlibbig: randbody.o randshlibbig.o
+
 randstack1: randbody.o randstack1.o
 
 randstack2: randbody.o randstack2.o
@@ -170,10 +177,16 @@ shlibtest.o: shlibtest.c
 shlibtest2.o: shlibtest2.c
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
+shlibtestbig.o: shlibtestbig.c
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
+
 shlibtest.so: shlibtest.o
 	$(CC) $(SHLDFLAGS) -shared -o $@ $+
 
 shlibtest2.so: shlibtest2.o
+	$(CC) $(SHLDFLAGS) -shared -o $@ $+
+
+shlibtestbig.so: shlibtestbig.o
 	$(CC) $(SHLDFLAGS) -shared -o $@ $+
 
 shlibbss: body.o shlibbss.o shlibtest.so shlibtest2.so
