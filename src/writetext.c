@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <dlfcn.h>
 #include <sys/mman.h>
 #include "body.h"
 
@@ -24,10 +25,20 @@ static void sigsegv( int sig )
 
 void doit( void )
 {
-	char *buf;
-	char c;
+	void *handle;
+	char *shtext;
 
-	buf = (char*)shlibtest;
+	handle = dlopen( "shlibtest.so", RTLD_LAZY );
+	if( handle == NULL ) {
+		fprintf( stderr, "dlopen() returned NULL\n" );
+		exit( 1 );
+	}
+	dlerror(); /* clear any errors */
+	shtext = dlsym( handle, "shlibtest" );
+	if( dlerror() != NULL ) {
+		fprintf( stderr, "symbol %s not found in %s\n", "shlibtest", "shlibtest.so" );
+		exit( 1 );
+	}
 
 	signal( SIGSEGV, sigsegv );
 
@@ -45,11 +56,13 @@ void doit( void )
 	 * But then, it is of course easier to get good paxtest results by
 	 * disabling this mprotect than to fix your kernel code and userland.
 	 */
-	do_mprotect( buf, 4096, PROT_READ|PROT_WRITE|PROT_EXEC );
+	do_mprotect( shtext, 4096, PROT_READ|PROT_WRITE|PROT_EXEC );
 
 	/* Try to write something */
-	*buf = 'X';
+	*shtext = 'X';
 
 	/* It worked when the function returns */
 	itworked();
+
+	dlclose( handle );
 }

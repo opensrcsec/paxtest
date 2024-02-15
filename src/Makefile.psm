@@ -193,7 +193,7 @@ getarg2: getarg.o
 	# disable segmexec, kernel else overrides pageexec
 	$(SHELL) $(SETPAXFLAGS) PRsm $@
 	
-$(MPROTSH_TESTS): body.o shlibtest.so
+$(MPROTSH_TESTS): body.o
 	$(CC) $(CFLAGS) -o $@.o -c $@.c
 	$(CC) $(LDFLAGS) -o $@ $@.o $^ $(DL) $(PTHREAD)
 
