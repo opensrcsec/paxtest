@@ -2,6 +2,10 @@
 #
 # Simple wrapper to set PaX in all possible supported ways.
 #
+# (C) 2024 Open Source Security
+#
+# This file has been released under the GNU Public Licence version 2 or later.
+#
 # - minipli
 
 have_prog() {

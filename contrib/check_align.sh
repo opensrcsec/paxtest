@@ -11,7 +11,9 @@
 # binutil's, which is faster, or elfutils') and, optionally, scanelf -- again,
 # much faster that the find-based fall-back.
 #
-# (C) 2024 Open Source Security, Inc. All Rights Reserved.
+# (C) 2024 Open Source Security
+#
+# This file has been released under the GNU Public Licence version 2 or later.
 #
 # - minipli
 
