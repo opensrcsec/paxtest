@@ -49,6 +49,7 @@ RAND_TESTS=	\
 	randheap2 \
 	randmain1 \
 	randmain2 \
+	randmainbig \
 	randfmap \
 	randfmapbig \
 	randshlib \
@@ -89,6 +90,7 @@ UTILS=	getamap \
 	getheap2 \
 	getmain1 \
 	getmain2 \
+	getmainbig \
 	getshlib \
 	getshlibbig \
 	getvdso \
@@ -175,6 +177,12 @@ getmain2: getmain2.o
 getmain2.o: getmain.c
 	${CC} ${CFLAGS} -fPIC -o ${.TARGET} -c ${.ALLSRC}
 
+getmainbig: getmainbig.o
+	${CC} ${SHLDFLAGS} -pie -fPIE -Wl,-z,max-page-size=0x200000 -o ${.TARGET} ${.ALLSRC}
+
+getmainbig.o: getmainbig.c
+	${CC} ${CFLAGS} -fPIE -o ${.TARGET} -c ${.ALLSRC}
+
 getshlib: getshlib.o
 	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
@@ -252,6 +260,9 @@ randmain1: randbody.o randmain1.o
 	${CC} ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
 randmain2: randbody.o randmain2.o
+	${CC} ${LDFLAGS} ${SHLDFLAGS} -o ${.TARGET} ${.ALLSRC}
+
+randmainbig: randbody.o randmainbig.o
 	${CC} ${LDFLAGS} ${SHLDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
 randshlib: randbody.o randshlib.o

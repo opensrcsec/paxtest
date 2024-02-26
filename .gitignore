@@ -18,6 +18,7 @@ getheap1
 getheap2
 getmain1
 getmain2
+getmainbig
 getshlib
 getshlibbig
 getshlibdelta1
@@ -47,6 +48,7 @@ randheap1
 randheap2
 randmain1
 randmain2
+randmainbig
 randshlib
 randshlibbig
 randshlibdelta1

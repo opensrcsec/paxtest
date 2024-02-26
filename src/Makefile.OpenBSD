@@ -27,6 +27,7 @@ TESTS=	anonmap \
 	randamapbig \
 	randheap1 \
 	randmain1 \
+	randmainbig \
 	randfmap \
 	randfmapbig \
 	randshlib \
@@ -51,6 +52,7 @@ UTILS=	getamap \
 	getheap2 \
 	getmain1 \
 	getmain2 \
+	getmainbig \
 	getshlib \
 	getshlibbig \
 	getstack1 \
@@ -121,6 +123,12 @@ getmain2: getmain2.o
 getmain2.o: getmain.c
 	$(CC) $(CFLAGS) -fPIC -o $@ -c $<
 
+getmainbig: getmainbig.o
+	$(CC) -shared -Wl,-z,max-page-size=0x200000 -o $@ $+
+
+getmainbig.o: getmainbig.c
+	$(CC) $(CFLAGS) -fPIC -o $@ -c $<
+
 getshlib: getshlib.o
 
 getshlibbig: getshlibbig.o
@@ -170,6 +178,8 @@ randheap2: randbody.o randheap2.o
 randmain1: randbody.o randmain1.o
 
 randmain2: randbody.o randmain2.o
+
+randmainbig: randbody.o randmainbig.o
 
 randshlib: randbody.o randshlib.o
 

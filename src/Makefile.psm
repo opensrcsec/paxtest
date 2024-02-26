@@ -7,6 +7,7 @@ CC ?= gcc
 
 check_gcc = $(shell if $(CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; \
 	then echo "$(1)"; else echo "$(2)"; fi)
+COMMA := ,
 
 # PIC, for shared libraries
 CC_PIC := -fPIC
@@ -19,6 +20,9 @@ LD_PIE := -pie
 # forcibly disable PIE
 CC_EXEC := -fno-PIE
 LD_EXEC := $(call check_gcc,-no-pie,$(call check_gcc,-nopie))
+
+# option for huge page aligned sections
+LD_BIG := $(call check_gcc,-Wl$(COMMA)-z$(COMMA)max-page-size=0x200000)
 
 RUNDIR ?= .
 
@@ -46,6 +50,11 @@ MPROT_TESTS   := mprotanon mprotbss mprotdata mprotheap mprotstack
 MPROTSH_TESTS := mprotshbss mprotshdata writetext
 SHLIB_TESTS   := shlibbss shlibdata
 RAND_TESTS    := randamap randamapbig randheap1 randheap2 randmain1 randmain2
+ifneq ($(LD_BIG),)
+RAND_TESTS    += randmainbig
+BIG_TARGETS   += getmainbig
+UTILS_EXTRA   += getmainbig
+endif
 RAND_TESTS    += randfmap randfmapbig randshlib randshlibbig randvdso randstack1
 RAND_TESTS    += randstack2 randarg1 randarg2 randshlibdelta1 randshlibdelta2
 RANDEX_TESTS  := randexhaust1 randexhaust2
@@ -59,7 +68,7 @@ UTILS_SHLIB := getshlib getshlibbig getshlibdelta1 getshlibdelta2
 
 UTILS := getamap getamapbig getarg1 getarg2 getexhaust1 getexhaust2
 UTILS += getfmap getfmapbig  getheap1 getheap2 getmain1 getmain2
-UTILS += getstack1 getstack2 getvdso $(UTILS_SHLIB)
+UTILS += getstack1 getstack2 getvdso $(UTILS_SHLIB) $(UTILS_EXTRA)
 
 SHLIBS := shlibtest.so shlibtest2.so shlibtestbig.so
 
@@ -73,7 +82,7 @@ ET_EXEC_TARGETS := getheap1 getmain1 getshlibdelta1
 # (recommended by PaX Team, not really a requirement)
 ET_EXEC_TARGETS += $(RET_TESTS) $(RETX_TESTS)
 # ensure these are build as PIE
-ET_DYN_TARGETS  := getheap2 getmain2 getshlibdelta2
+ET_DYN_TARGETS  := getheap2 getmain2 getmainbig getshlibdelta2
 
 PAX_TARGETS_SPRXM := getmain1 getshlibdelta1
 PAX_TARGETS_SPXM  := $(RETX_TESTS)
@@ -140,6 +149,7 @@ $(SHLIB_TARGETS): LDFLAGS += $(LD_PIC)
 $(PTHREAD_TARGETS): CFLAGS += -pthread
 $(PTHREAD_TARGETS): LDLIBS += -lpthread
 $(DLOPEN_TARGETS): LDLIBS += -ldl
+$(BIG_TARGETS): LDFLAGS += $(LD_BIG)
 
 $(EXEC_TESTS) $(MPROT_TESTS) $(MPROTSH_TESTS): body.c
 $(SHLIB_TESTS) $(RET_TESTS) $(RETX_TESTS): body.c
