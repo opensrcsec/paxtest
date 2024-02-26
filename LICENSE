@@ -1,4 +1,5 @@
 SPDX-License-Identifier: GPL-2.0+
+SPDX-License-Identifier: GPL-2.0-or-later
 
 paxtest - Memory protection and randomization tests (not limited to PaX enabled kernels) 
 Copyright (C) 2003-2004 by Peter Busser <peter@adamantix.org>
