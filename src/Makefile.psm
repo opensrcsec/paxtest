@@ -94,7 +94,7 @@ PAX_TARGETS_SRpm := getarg1 getstack1 getexhaust1 getexhaust2
 PAX_TARGETS_PRsm := getarg2 getstack2
 
 
-all: $(SHLIBS) $(TESTS) $(UTILS) paxtest
+all: $(SHLIBS) $(TESTS) $(UTILS) paxtest ../paxtest
 	$(MAKE) -f $(firstword $(MAKEFILE_LIST)) apply_pax_flags
 
 contrib:
@@ -121,7 +121,9 @@ endif
 
 paxtest: genpaxtest $(TESTS)
 	$(SHELL) genpaxtest $(TESTS)
-	ln -sf src/paxtest.wrap ../$@
+
+../paxtest:
+	ln -sf src/paxtest.wrap $@
 	chmod 755 ../$@
 
 apply_pax_flags: $(PAX_TARGETS_SPRXM) $(PAX_TARGETS_SPXM)
