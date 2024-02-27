@@ -28,6 +28,10 @@ find_tools() {
 		err=1
 	fi
 
+	if $READELF --help | grep -F -q -e '--wide'; then
+		READELF="$READELF -W"
+	fi
+
 	AWK=$(command -v gawk 2>/dev/null)
 	if [ -z "$AWK" ]; then
 		echo >&2 "error: 'gawk' not found!"
@@ -51,30 +55,39 @@ elf_list() {
 	fi
 }
 
-check_dir() {
-	if [ ! -d "$1" ]; then
-		echo "ignoring '$1': not a directory"
-		return
-	fi
+check_file() {
+	$READELF -l "$1" 2>/dev/null | $AWK '
+		BEGIN  { align=0x1000; p=0 }
+		/LOAD/ { if (strtonum($NF) > align) { align=strtonum($NF); p=1 } }
+		END    { if (p) printf "%s (max align=%#x)\n", "'"$1"'", align }
+		'
+}
 
+check_dir() {
 	elf_list "$1" | while read file; do
-		$READELF -Wl "$file" 2>/dev/null | $AWK '
-			BEGIN  { align=0x1000; p=0 }
-			/LOAD/ { if (strtonum($NF) > align) { align=strtonum($NF); p=1 } }
-			END    { if (p) printf "%s (max align=%#x)\n", "'"$file"'", align }
-			'
+		check_file "$file"
 	done
+}
+
+check() {
+	if [ -d "$1" ]; then
+		check_dir "$1"
+	elif [ -r "$1" ]; then
+		check_file "$1"
+	else
+		echo "ignoring '$1': neither a directory nor a file"
+	fi
 }
 
 find_tools
 
 if [ $# -lt 1 ]; then
-	echo >&2 "error: Missing directory argument(s)!"
+	echo >&2 "error: Missing directory/file argument(s)!"
 	echo >&2
 	echo >&2 "usage: $0 /path/to/check..."
 	exit 1
 fi
 
-for dir in "$@"; do
-	check_dir "$dir"
+for arg in "$@"; do
+	check "$arg"
 done
