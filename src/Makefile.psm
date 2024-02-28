@@ -42,8 +42,8 @@ LDFLAGS   :=
 
 # append optional user provided flags
 CPPFLAGS  += $(CPPFLAGS_EXTRA)
-CFLAGS    += $(CFLAGS_EXTRA)
-LDFLAGS   += $(LDFLAGS_EXTRA)
+CFLAGS    += $(THEARCH) $(CFLAGS_EXTRA)
+LDFLAGS   += $(THEARCH) $(LDFLAGS_EXTRA)
 
 EXEC_TESTS    := anonmap execbss execdata execheap execstack
 MPROT_TESTS   := mprotanon mprotbss mprotdata mprotheap mprotstack
