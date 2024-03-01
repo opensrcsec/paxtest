@@ -1,4 +1,4 @@
-paxtest (unreleased) stable; urgency=low
+paxtest (0.10.0-1) stable; urgency=low
   * Fixed parallel builds
   * Fix detection of -nopie/-no-pie which lead to broken ET_EXEC tests
   * Prevent the compiler from detecting buffer overflows at compile time and
