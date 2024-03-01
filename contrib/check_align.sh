@@ -55,12 +55,26 @@ elf_list() {
 	fi
 }
 
+filter_type() {
+	local has_needed
+	local has_interp
+
+	has_interp=$($READELF -l "$1" 2>/dev/null | grep -qw INTERP && echo 1 || echo 0)
+	has_needed=$($READELF -d "$1" 2>/dev/null | grep -qw NEEDED && echo 1 || echo 0)
+
+	if [ $has_needed -eq 0 ] || [ $has_interp -eq 0 ]; then
+		sed 's/)$/, statically linked)/'
+	else
+		cat
+	fi
+}
+
 check_file() {
 	$READELF -l "$1" 2>/dev/null | $AWK '
 		BEGIN  { align=0x1000; p=0 }
 		/LOAD/ { if (strtonum($NF) > align) { align=strtonum($NF); p=1 } }
 		END    { if (p) printf "%s (max align=%#x)\n", "'"$1"'", align }
-		'
+		' | filter_type "$1"
 }
 
 check_dir() {
