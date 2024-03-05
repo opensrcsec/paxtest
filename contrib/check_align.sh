@@ -58,11 +58,18 @@ elf_list() {
 filter_type() {
 	local has_needed
 	local has_interp
+	local elf_type
 
 	has_interp=$($READELF -l "$1" 2>/dev/null | grep -qw INTERP && echo 1 || echo 0)
 	has_needed=$($READELF -d "$1" 2>/dev/null | grep -qw NEEDED && echo 1 || echo 0)
+	elf_type=$($READELF -h "$1" 2>/dev/null | sed -n 's/.*Type:.*\(NONE\|REL\|EXEC\|DYN\|CORE\).*$/\1/p')
 
-	if [ $has_needed -eq 0 ] || [ $has_interp -eq 0 ]; then
+	# static EXEC: !NEEDED, !INTERP
+	# static DYN (aka static PIE): !NEEDED, INTERP
+	# EXEC: ?NEEDED, INTERP
+	# DYN (shlib): ?NEEDED, !INTERP
+	# DYN (PIE): ?NEEDED, INTERP
+	if [ $has_needed -eq 0 ] && [ $has_interp -eq 0 ] && [ "$elf_type" = "EXEC" ] ; then
 		sed 's/)$/, statically linked)/'
 	else
 		cat
