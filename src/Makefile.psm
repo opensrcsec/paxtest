@@ -124,7 +124,7 @@ paxtest: genpaxtest $(TESTS)
 
 ../paxtest:
 	ln -sf src/paxtest.wrap $@
-	chmod 755 ../$@
+	chmod 755 $@
 
 apply_pax_flags: $(PAX_TARGETS_SPRXM) $(PAX_TARGETS_SPXM)
 apply_pax_flags: $(PAX_TARGETS_SRpm) $(PAX_TARGETS_PRsm)
